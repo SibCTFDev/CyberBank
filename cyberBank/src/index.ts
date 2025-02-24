@@ -1,11 +1,17 @@
-import express from "express"
+import {urlencoded} from "express"
+import "reflect-metadata"
+import { createExpressServer } from 'routing-controllers';
+import { AuthController } from './controller/authController';
 
-
-export const app = express();
-
-
-const port = process.env.PORT || 8000;
-app.get('/', (request, response) => {
-  response.send('Hello world!');
+const app = createExpressServer({
+    controllers: [AuthController],
 });
-app.listen(port, () => console.log(`Running on port ${port}`));
+const port = 8000;
+
+app.use(
+    urlencoded({
+        extended: true,
+    })
+);
+
+app.listen(port, () => console.log(`Cyber Bank is running on port ${port}`));

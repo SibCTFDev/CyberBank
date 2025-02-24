@@ -12,7 +12,7 @@
   "name": "cyberbank",
   "version": "1.0.0",
   "description": "service for SibirCTF 2025",
-  "main": "build/src/index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node ."

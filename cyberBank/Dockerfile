@@ -1,10 +1,12 @@
-FROM node:21-alpine
+FROM node:22-alpine
 
-WORKDIR /usr/cyberBank
+WORKDIR /app
 
-COPY package.json .
-RUN npm install
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 
-COPY . .
+RUN npm ci || npm ci
+
+COPY . /app
 
 RUN npm run build
