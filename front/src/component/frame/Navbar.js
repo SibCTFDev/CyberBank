@@ -1,0 +1,66 @@
+import {useNavigate} from "react-router-dom";
+import {Grid2 as Grid, Button} from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
+
+import NavButton from "../field/NavButton";
+
+
+function Navbar(props) {
+    const {HOME, PROFILE, PRODUCT} = props;
+
+    const navigate = useNavigate();
+    const gotoPage = (value) => () => {
+        navigate(value);
+    };
+
+    return (
+        <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{
+                width: "100%",
+                height: "10vh",
+                padding: "2px 32px",
+                borderBottom: "1px solid",
+                borderColor: "gray",
+                bgcolor: "#ff2a6d"
+            }}
+        >
+            <Grid item>
+                <img src={"/logo.png"} alt="Logo" width={50} onClick={gotoPage(HOME)} style={{bgcolor: "#fff"}}/>
+            </Grid>
+            <Grid item>
+            <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+                spacing="12px"
+                wrap="nowrap"
+            >
+                <Grid item>
+                    <NavButton text="home" handler={gotoPage(HOME)}/>
+                </Grid>
+                <Grid item>
+                    <NavButton text="create product" handler={gotoPage(PRODUCT)}/>
+                </Grid>
+                <Grid item>
+                    <NavButton text="profile" handler={gotoPage(PROFILE)} disableDivider/>
+                </Grid>
+                <Grid item sx={{marginLeft: "48px"}}>
+                    <Button 
+                        sx={{color: "#01012b"}}
+                        endIcon={<LogoutIcon sx={{color:"#01012b"}}/>}
+                        onClick={()=>{console.log("logout")}}
+                    >
+                        Logout
+                    </Button>
+                </Grid>
+            </Grid>
+            </Grid>
+        </Grid>
+    )
+}
+
+export default Navbar;

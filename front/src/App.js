@@ -1,23 +1,40 @@
-import logo from './logo.svg';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import '@fontsource/vt323';
+
+import Navbar from './component/frame/Navbar';
+import HomePage from './component/page/HomePage';
+import ProductPage from './component/page/ProductPage';
+import ProfilePage from './component/page/ProfilePage';
+import AuthPage from './component/page/AuthPage';
+
 
 function App() {
+  const HOME = "/";
+  const PROFILE = "/profile/";
+  const PRODUCT = "/product/";
+  const AUTH = "/schedules/";
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router className="AppFrame">
+        <Navbar
+          HOME={HOME}
+          PROFILE={PROFILE}
+          PRODUCT={PRODUCT}
+        />
+        <Routes>
+            <Route exact path={HOME} element={<HomePage/>}/>
+            <Route exact path={PROFILE} element={<ProfilePage/>}/>
+            <Route exact path={PRODUCT} element={<ProductPage/>}/>
+            <Route exact path={AUTH} element={<AuthPage/>}/>
+        </Routes>
+      </Router>
     </div>
   );
 }
