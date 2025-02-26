@@ -24,12 +24,12 @@ function Navbar(props) {
                 height: "10vh",
                 padding: "2px 32px",
                 borderBottom: "1px solid",
-                borderColor: "gray",
-                bgcolor: "#ff2a6d"
+                borderColor: "color.text",
+                bgcolor: "color.primary"
             }}
         >
             <Grid item>
-                <img src={"/logo.png"} alt="Logo" width={50} onClick={gotoPage(HOME)} style={{bgcolor: "#fff"}}/>
+                <img src={"/logo.png"} alt="Logo" width={105} onClick={gotoPage(HOME)}/>
             </Grid>
             <Grid item>
             <Grid
@@ -50,8 +50,8 @@ function Navbar(props) {
                 </Grid>
                 <Grid item sx={{marginLeft: "48px"}}>
                     <Button 
-                        sx={{color: "#01012b"}}
-                        endIcon={<LogoutIcon sx={{color:"#01012b"}}/>}
+                        sx={{color: "color.text"}}
+                        endIcon={<LogoutIcon sx={{color:"color.text"}}/>}
                         onClick={()=>{console.log("logout")}}
                     >
                         Logout

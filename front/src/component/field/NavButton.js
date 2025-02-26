@@ -8,7 +8,7 @@ function NavButton(props) {
         <Divider 
             orientation="vertical" 
             variant="middle" 
-            sx={{bgcolor: "#01012b", height:"25px", marginTop:"15px"}}
+            sx={{bgcolor: "color.text", height:"25px", marginTop:"15px"}}
             flexItem 
         />
     )
@@ -18,7 +18,7 @@ function NavButton(props) {
             container
             alignItems="center"
         >
-            <Button sx={{color: "#01012b"}} onClick={handler}>{text}</Button>
+            <Button sx={{color: "color.text"}} onClick={handler}>{text}</Button>
             {divider}
         </Grid>
     );
