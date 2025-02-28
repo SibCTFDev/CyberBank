@@ -30,7 +30,7 @@ function HomePage(props) {
                 openModal={toggleModal(true)}
             />
         ))
-    )
+    );
         
     return (
         <>

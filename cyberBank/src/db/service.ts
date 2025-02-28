@@ -7,7 +7,7 @@ import { userRepo } from "./repo";
 import { commentRepo } from "./repo";
 
 
-export async function createUser(name: string, password: string) {
+export async function createUser(name: string, password: string) : Promise<User | null> {
     const user = new User();
 
     user.name = name;
@@ -20,14 +20,14 @@ export async function createUser(name: string, password: string) {
 }
 
 export async function createProduct(
-    description: string, content: string, 
-    price: number, user_id: number) {
+        description: string, content: string, 
+        price: number, user_id: number) : Promise<Product | null> {
     const product = new Product();
 
     product.description = description;
     product.content = content;
     product.price = price;
-    product.image_path = "";
+    product.image_path = "image gen func does not ready yet";
     product.created = Date();
     
     const user =  await userRepo.findOneBy({id: user_id});
@@ -42,7 +42,7 @@ export async function createProduct(
     return product;
 }
 
-export async function createComment(content: string, user_id: number, product_id: number) {
+export async function createComment(content: string, user_id: number, product_id: number) : Promise<Comment | null> {
     const comment = new Comment();
 
     comment.content = content;

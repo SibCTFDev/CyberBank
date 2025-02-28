@@ -7,7 +7,7 @@ function ProductCard(props) {
     const selectProductHandler = () => {
         selectProduct(product);
         openModal();
-    }
+    };
 
     return (
         <Grid 

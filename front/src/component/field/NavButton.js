@@ -11,7 +11,7 @@ function NavButton(props) {
             sx={{bgcolor: "color.text", height:"25px", marginTop:"15px"}}
             flexItem 
         />
-    )
+    );
 
     return (
         <Grid
