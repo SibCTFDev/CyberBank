@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { Controller, JsonController, Get, Post, Put, Param, Body } from 'routing-controllers';
+import { Controller, JsonController, Get, Post, Param, Body } from 'routing-controllers';
 
-import { ProductObject } from 'src/interface/productObject';
+import { ProductObject } from '../interface/productObject';
 
 
 @Controller('/products')
@@ -25,7 +25,7 @@ export class ProductsController {
 @JsonController()
 export class CreateProductController {
     @Post('/products/create')
-    createProduct(@Body({ required: true }) product: ProductObject) {
-        return `create a product object and returns it; product name = ${product.name}`;
+    createProduct(@Body({ required: true }) data: ProductObject) {
+        return `create a product object and returns it; product = ${data.description}`;
     }
 }

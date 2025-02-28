@@ -1,6 +1,5 @@
 export interface ProductObject {
-    id: number;
-    name: string;
-    someField: string;
-    anotherField: any;
+    description: string;
+    content: string;
+    price: number;
 }

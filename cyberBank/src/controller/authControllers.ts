@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { Controller, JsonController, Get, Post, Body, Req } from 'routing-controllers';
 import { Request } from 'express';
-import { UserParams } from 'src/interface/userParams';
+import { UserParams } from '../interface/userParams';
 
 
 @JsonController()
