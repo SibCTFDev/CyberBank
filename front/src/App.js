@@ -1,5 +1,5 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,81 +17,81 @@ import useTheme from "./Theme"
 
 
 function App() {
-  const [products, setProducts] = useState(
-    [
-        {
-            id: 1,
-            image_id: 1,
-            owner: "user1",
-            description: "description",
-            content: "secret",
-            price: 200,
-        },
-        {
-            id: 2,
-            image_id: 2,
-            owner: "user2",
-            description: "description2",
-            content: "secret",
-            price: 150,
-        },
-        {
-            id: 3,
-            image_id: 3,
-            owner: "user1",
-            description: "description3",
-            content: "secret",
-            price: 220,
-        },
-        {
-            id: 4,
-            image_id: 4,
-            owner: "user2",
-            description: "description4",
-            content: "secret",
-            price: 330,
-        },
-        {
-            id: 5,
-            image_id: 4,
-            owner: "user1",
-            description: "description4",
-            content: "secret",
-            price: 330,
-        },
-        {
-            id: 6,
-            image_id: 4,
-            owner: "user2",
-            description: "description4",
-            content: "secret",
-            price: 330,
-        },
-        {
-            id: 7,
-            image_id: 4,
-            owner: "user1",
-            description: "description4",
-            content: "secret",
-            price: 330,
-        },
-        {
-            id: 8,
-            image_id: 4,
-            owner: "user2",
-            description: "description4",
-            content: "secret",
-            price: 330,
-        }
-        
-    ]
-  );
+  const [products, setProducts] = useState(null);
 
   const HOME = "/";
   const PROFILE = "/profile/";
   const PRODUCT = "/product/";
   const AUTH = "/schedules/";
 
+  useEffect(() => {
+    setProducts( [
+      {
+          id: 1,
+          image_id: 1,
+          owner: "user1",
+          description: "description",
+          content: "secret",
+          price: 200,
+      },
+      {
+          id: 2,
+          image_id: 2,
+          owner: "user2",
+          description: "description2",
+          content: "secret",
+          price: 150,
+      },
+      {
+          id: 3,
+          image_id: 3,
+          owner: "user1",
+          description: "description3",
+          content: "secret",
+          price: 220,
+      },
+      {
+          id: 4,
+          image_id: 4,
+          owner: "user2",
+          description: "description4",
+          content: "secret",
+          price: 330,
+      },
+      {
+          id: 5,
+          image_id: 4,
+          owner: "user1",
+          description: "description4",
+          content: "secret",
+          price: 330,
+      },
+      {
+          id: 6,
+          image_id: 4,
+          owner: "user2",
+          description: "description4",
+          content: "secret",
+          price: 330,
+      },
+      {
+          id: 7,
+          image_id: 4,
+          owner: "user1",
+          description: "description4",
+          content: "secret",
+          price: 330,
+      },
+      {
+          id: 8,
+          image_id: 4,
+          owner: "user2",
+          description: "description4",
+          content: "secret",
+          price: 330,
+      }
+    ]);
+  }, []); 
 
   return (
     <div className="App">

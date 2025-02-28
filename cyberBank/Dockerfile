@@ -9,4 +9,5 @@ RUN npm ci || npm ci
 
 COPY . /app
 
-RUN npm run build
+RUN apk update && apk add bash
+RUN chmod +x ./run.sh

@@ -1,11 +1,12 @@
 import "reflect-metadata"
 import {urlencoded} from "express"
 import { createExpressServer } from 'routing-controllers';
-import { AuthController } from './controller/authController';
+
+import { getControllersList } from "./utils";
 
 
 const app = createExpressServer({
-    controllers: [AuthController],
+    controllers: getControllersList(),
 });
 const port = 8000;
 
