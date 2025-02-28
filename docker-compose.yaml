@@ -1,8 +1,11 @@
 services:
   cyber-bank-api:
     build: ./cyberBank
-    command: sh -c "npm run start"
-    restart: unless-stopped
+    command: ["bash", "./run.sh"]
+    #restart: unless-stopped
+    environment:
+      DEBUG: ${DEBUG}
+      SESSION_SECRET: ${SESSION_SECRET}
     env_file:
       - .env
     # depends_on:

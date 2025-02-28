@@ -1,18 +1,17 @@
-import "reflect-metadata"
-import {urlencoded} from "express"
+import 'reflect-metadata';
 import { createExpressServer } from 'routing-controllers';
-import { AuthController } from './controller/authController';
 
+import { Authorized } from "./service/authService";
+import { getControllersList } from "./utils";
+
+
+require('dotenv').config();
 
 const app = createExpressServer({
-    controllers: [AuthController],
+    authorizationChecker: Authorized,
+    controllers: getControllersList(),
 });
-const port = 8000;
 
-app.use(
-    urlencoded({
-        extended: true,
-    })
-);
+const port = 8000;
 
 app.listen(port, () => console.log(`Cyber Bank is running on port ${port}`));
