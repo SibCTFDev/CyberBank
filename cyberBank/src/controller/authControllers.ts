@@ -1,36 +1,42 @@
 import 'reflect-metadata';
 
-import { Controller, JsonController, Get, Post, Body, Req, Res } from 'routing-controllers';
-import { Request , Response} from 'express';
+import { Controller, JsonController, Get, Post, Body, Res } from 'routing-controllers';
+import { Response} from 'express';
 import { UserParams } from '../interface/userParams';
 import bcrypt from 'bcryptjs';
 
-import { getUserByName } from '../db/service';
-import { getToken } from '../utils';
+import { getUserByName, createUser } from '../db/service';
+import { getToken, httpResponse401, hash, checkUserParams } from '../utils';
 
 
 @JsonController()
 export class AuthController {
     @Post('/login')
     async login(@Res() response: Response, @Body({ required: true }) loginData: UserParams) {
+        if (checkUserParams(loginData)) return httpResponse401(response);
+
         const user = await getUserByName(loginData.username);
 
         if (user && bcrypt.compareSync(loginData.password, user.password)) {
-            response.status(201).cookie("jwt", getToken(user.id, user.name));
+            response.status(201).cookie("jwt", getToken(user.id, user.name), {httpOnly: true});
             return 'Logged in successfully';
-        } else {
-            response.status(401);
-            return 'Invalid credentials'
-        }
+        } else return httpResponse401(response);
     }
 
     @Post('/register')
-    register(@Body({ required: true }) registerData: UserParams) {
-        return `register user with name${registerData.username}`;
+    async register(@Res() response: Response, @Body({ required: true }) registerData: UserParams) {
+        if (checkUserParams(registerData)) return httpResponse401(response);
+
+        const user = await createUser(registerData.username, hash(registerData.password));
+        if (!user) return 'Unable to create user. Please try again';
+
+        response.status(201);
+        return `User ${user.name} successfully created`;
     }
 
     @Post('/reset')
     changePassword(@Body({ required: true }) userData: UserParams) {
+        // TODO
         return `verify login ${userData.username} and change password`;
     }
 }
@@ -38,8 +44,9 @@ export class AuthController {
 @Controller()
 export class LogoutController {
     @Get('/logout')
-    logout(@Req() request: Request) {
-        return `get session data from the request and end the session`;
+    logout(@Res() response: Response) {
+        response.clearCookie('jwt')
+        return 'Logged out successfully';
     }
 
 }

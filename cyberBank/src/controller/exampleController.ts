@@ -2,8 +2,7 @@ import 'reflect-metadata';
 import { JsonController, Post, Body } from 'routing-controllers';
 
 import { UserParams } from 'src/interface/userParams';
-import { createUser } from '../db/service';
-import { userRepo } from '../db/repo';
+import { createUser, getUserByName } from '../db/service';
 import { hash } from '../utils';
 
 
@@ -17,7 +16,7 @@ export class ExampleController {
         console.log(user.id);
 
         // finding an object example (find method can be implemented in db/service.ts)
-        const createdUser = await userRepo.findOneBy({name: data.username});
+        const createdUser = await getUserByName(data.username);
         if (createdUser !== null) console.log(createdUser.id);
         
         return `create a product object and returns it; product = ${user.name}`;
