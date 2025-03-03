@@ -17,6 +17,20 @@ function HomePage(props) {
     const buyProductHandler = () => {
         setModalOpened(false);
     };
+
+    const pageContent = products === null ? null : (
+        products.map(product => (
+            <ProductCard
+                key={product.id}
+                product={product}
+                image_id={product.image_id}
+                description={product.description}
+                price={product.price}
+                selectProduct={setSelectedProduct}
+                openModal={toggleModal(true)}
+            />
+        ))
+    );
         
     return (
         <>
@@ -27,17 +41,7 @@ function HomePage(props) {
             className="PageFrame"
             sx={{bgcolor: "color.secondary"}}
         >   
-            {products.map(product => (
-                <ProductCard
-                    key={product.id}
-                    product={product}
-                    image_id={product.image_id}
-                    description={product.description}
-                    price={product.price}
-                    selectProduct={setSelectedProduct}
-                    openModal={toggleModal(true)}
-                />
-            ))}
+            {pageContent}
         </Grid>
         <Drawer
             anchor="bottom"
