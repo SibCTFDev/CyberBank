@@ -8,7 +8,7 @@ export class InitMigrate1740741248478 implements MigrationInterface {
             CREATE TABLE "user" (
                 "id" SERIAL NOT NULL,
                 "name" character varying(32) NOT NULL,
-                "password" character varying(32) NOT NULL,
+                "password" character varying(128) NOT NULL,
                 "balance" integer NOT NULL,
                 CONSTRAINT "UQ_065d4d8f3b5adb4a08841eae3c8" UNIQUE ("name"),
                 CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id")

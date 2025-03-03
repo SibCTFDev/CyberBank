@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import { createExpressServer } from 'routing-controllers';
+import express from 'express';
+import { useExpressServer } from 'routing-controllers';
 
 import { Authorized } from "./service/authService";
 import { getControllersList } from "./utils";
@@ -7,7 +8,12 @@ import { getControllersList } from "./utils";
 
 require('dotenv').config();
 
-const app = createExpressServer({
+var cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+
+useExpressServer(app, {
     authorizationChecker: Authorized,
     controllers: getControllersList(),
 });

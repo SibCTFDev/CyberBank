@@ -61,3 +61,7 @@ export async function createComment(content: string, user_id: number, product_id
     
     return comment;
 }
+
+export async function getUserByName(name: string) {
+    return await userRepo.findOneBy({name: name});
+}
