@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { Controller, JsonController, Get, Post, Body, Res } from 'routing-controllers';
+import { Controller, JsonController, Get, Post, Body, Res, Authorized } from 'routing-controllers';
 import { Response} from 'express';
 import { UserParams } from '../interface/userParams';
 import bcrypt from 'bcryptjs';
@@ -18,7 +18,7 @@ export class AuthController {
         const user = await getUserByName(loginData.username);
 
         if (user && bcrypt.compareSync(loginData.password, user.password)) {
-            response.status(201).cookie("jwt", getToken(user.id, user.name), {httpOnly: true});
+            response.status(201).cookie("jwt", getToken(user.id, user.name));
             const {password, ...rest} = user;
             return rest;
         } else return httpResponse401(response);
@@ -44,6 +44,7 @@ export class AuthController {
 
 @Controller()
 export class LogoutController {
+    @Authorized()
     @Get('/logout')
     logout(@Res() response: Response) {
         response.clearCookie('jwt')

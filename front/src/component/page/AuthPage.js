@@ -1,17 +1,22 @@
 import { useState } from 'react';
-import {Button, Grid2 as Grid, TextField, CircularProgress} from '@mui/material';
+import {useNavigate} from "react-router-dom";
+import {Button, Grid2 as Grid, TextField} from '@mui/material';
 import { postLogin } from '../../requests';
 
 
 function AuthPage (props) {
-    const {setAuthorized} = props;
+    const {setAuthorized, REGISTER} = props;
 
     const [userInput, setUserInput] = useState({
         login: '',
         password: '',
         error: ''
     });
-    const [loading, setLoading] = useState(false);
+    
+    const navigate = useNavigate();
+    const gotoPage = (value) => () => {
+        navigate(value);
+    };
 
     const changeUserInput = (data, value) => 
         setUserInput({...userInput, [data]: value});
@@ -23,23 +28,17 @@ function AuthPage (props) {
         changeUserInput('password', event.target.value);
 
     const login = () => {
-        setLoading(true); 
+        changeUserInput('error', '');
         postLogin({
-            data: userInput,
+            data: {username: userInput.login, password: userInput.password},
             handler: () => {
                 setAuthorized(true);
-                setLoading(false);
             },
             excHandler: (err) => {
-                if (err.response.status !== 200) {
-                    changeUserInput('error', err.response.data.detail);
-                    setLoading(false);
-                };
+                changeUserInput('error', err.response.data);
             }
         });
     };
-
-    const loadingVisible = loading ? "visible" : "hidden";
 
     return (
         <Grid
@@ -84,43 +83,32 @@ function AuthPage (props) {
                             onChange={passwordChangeHandler}
                             label={"Password"}
                             value={userInput.password}
-                            helperText={userInput.error}
                             type="password"
                             size="small"
                             fullWidth
                         />
                     </Grid>
-                    <Grid item className="AuthGridField">
+                    <Grid item className="AuthGridField"  sx={{marginBottom: "0"}}>
                         <Button
                             variant="outlined"
-                            onClick={()=> {setAuthorized(true)}}
+                            onClick={login}
                             fullWidth
                         >
                             Sign in
                         </Button>
                     </Grid>
+                    <Grid item className="AuthErrorLabel">
+                        {userInput.error}
+                    </Grid>
                     <Grid item>
                         <Button
                             className="SignUpButton"
                             variant="outlined"
-                            onClick={()=> {setAuthorized(true)}}
+                            onClick={gotoPage(REGISTER)}
                         >
                             Sign up
                         </Button>
                     </Grid>
-                </Grid>
-                
-                <Grid
-                    className="AuthLoading"
-                    sx={{visibility: loadingVisible}}
-                >
-                    <CircularProgress 
-                        size={50} 
-                        sx={{
-                            color: 'text.medium',
-                            marginBottom: "20px",
-                        }}
-                    />
                 </Grid>
             </Grid>
         </Grid>

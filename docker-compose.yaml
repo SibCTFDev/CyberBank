@@ -21,6 +21,7 @@ services:
     environment:
       DEBUG: ${DEBUG}
       SESSION_SECRET: ${SESSION_SECRET}
+      REACT_HOST: ${REACT_HOST}
     env_file:
       - .env
     depends_on:
@@ -35,7 +36,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
       WDS_SOCKET_HOST: "127.0.0.1"
-      API_HOST: ${API_HOST}
+      REACT_APP_API_HOST: ${API_HOST}
+      EXPRESS_HOST: "cyber-bank-api"
     depends_on:
       - cyber-bank-api
     ports:

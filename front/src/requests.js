@@ -1,14 +1,19 @@
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 
-const HOST = process.env.API_HOST || '/api';
+const HOST = process.env.REACT_APP_API_HOST || "/api";
 
-export const MESSAGES_URL = `${HOST}/messages/`;
-export const MESSAGES_SEND_URL = `${HOST}/messages/send/`;
+console.log(HOST);
 
-export function postLogin({handler, excHandler}) {
+export const LOGIN = `${HOST}/login`;
+export const REGISTER = `${HOST}/register`;
+export const LOGOUT = `${HOST}/logout`;
+
+export function postLogin({data, handler, excHandler}) {
     axios
-        .get(MESSAGES_URL, {
+        .post(LOGIN, JSON.stringify(data), {
+            withCredentials: true,
             headers: {
                 "Content-Type": "application/json",
             }
@@ -17,17 +22,14 @@ export function postLogin({handler, excHandler}) {
             handler(res.data);
         })
         .catch(err => {
+            Cookies.remove('jwt');
             excHandler(err);
         });
 };
 
-export function sendMessage({message, handler, excHandler}) {
+export function getLogout({handler, excHandler}) {
     axios
-        .post(MESSAGES_SEND_URL, message, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+        .get(LOGOUT, {withCredentials: true})
         .then(res => {
             handler(res.data);
         })

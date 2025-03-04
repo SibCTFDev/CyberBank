@@ -4,6 +4,7 @@ const Env = {
     DB_PASS: process.env.DB_PASS ?? "default",
     DB_NAME: process.env.DB_NAME ?? "name",
     SESSION_SECRET: process.env.SESSION_SECRET ?? "default",
+    REACT_HOST: process.env.REACT_HOST ?? "http://localhost",
 }
 
 export default Env;
