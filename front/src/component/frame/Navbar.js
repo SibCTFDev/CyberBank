@@ -3,6 +3,7 @@ import {Grid2 as Grid, Button} from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import NavButton from "../field/NavButton";
+import { getLogout } from "../../requests";
 
 
 function Navbar(props) {
@@ -11,6 +12,13 @@ function Navbar(props) {
     const navigate = useNavigate();
     const gotoPage = (value) => () => {
         navigate(value);
+    };
+
+    const logout = () => {
+        getLogout({
+            handler: () => window.location.reload(),
+            excHandler: (err) => console.log(err.response.data)
+        })
     };
 
     return (
@@ -52,7 +60,7 @@ function Navbar(props) {
                     <Button 
                         sx={{color: "color.text"}}
                         endIcon={<LogoutIcon sx={{color:"color.text"}}/>}
-                        onClick={()=>{console.log("logout")}}
+                        onClick={logout}
                     >
                         Logout
                     </Button>

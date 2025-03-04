@@ -54,13 +54,13 @@
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #005678; 
+  background: #ff3d00; 
   border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #006889; 
+  background: #ff5d11; 
 }
 
 .PageFrame {
@@ -68,4 +68,55 @@
   padding: 12px;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.AuthPageGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.AuthTextGrid {
+  width: max(20%, 300px);
+  height: 350px;
+  min-height: 350px;
+  padding: 20px;
+  margin-bottom: 10vh;
+  border-radius: 0.375rem;
+}
+
+.AuthLabel {
+  font-size: 28px !important;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0;
+  text-align: center;
+  height: 68px;
+  width: max(20%, 250px);
+  padding: 20px 0;
+}
+
+.AuthGridField {
+  margin-bottom: 28px;
+  width: 100%;
+  min-width: 100%;
+}
+
+.AuthErrorLabel {
+  width: 100%;
+  height: auto;
+  min-height: 36px;
+  max-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100%;
+  overflow-x: auto;
+  font-size: 22px !important;
+}
+
+.SignUpButton {
+  font-size: 20px !important;
 }

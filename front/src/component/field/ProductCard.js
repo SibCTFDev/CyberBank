@@ -14,6 +14,8 @@ function ProductCard(props) {
             item
             sx={{
                 bgcolor: "color.background",
+                border: "1px solid",
+                borderColor: "color.text",
                 padding: "12px",
                 margin: "12px",
                 width: "200px",
@@ -33,10 +35,10 @@ function ProductCard(props) {
                 <Grid item>
                     <img src={"/product.png"} alt={image_id} width={150}/>
                 </Grid>
-                <Grid item>
+                <Grid item sx={{color: "color.text"}}>
                     {description}
                 </Grid>
-                <Grid item>
+                <Grid item sx={{color: "color.text"}}>
                     {`${price} $`}
                 </Grid>
             </Grid>

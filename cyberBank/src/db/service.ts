@@ -12,7 +12,6 @@ export async function createUser(name: string, password: string) : Promise<User 
 
     user.name = name;
     user.password = password;
-    user.balance = 3;
 
     await userRepo.save(user);
     
@@ -60,4 +59,8 @@ export async function createComment(content: string, user_id: number, product_id
     await commentRepo.save(comment);
     
     return comment;
+}
+
+export async function getUserByName(name: string) {
+    return await userRepo.findOneBy({name: name});
 }
