@@ -27,6 +27,9 @@ export class AuthController {
     @Post('/register')
     async register(@Res() response: Response, @Body({ required: true }) registerData: UserParams) {
         if (checkUserParams(registerData)) return httpResponse401(response);
+        
+        if (await getUserByName(registerData.username)) 
+            return httpResponse401(response, 'Such user is already exist');
 
         const user = await createUser(registerData.username, hash(registerData.password));
         if (!user) return 'Unable to create user. Please try again';

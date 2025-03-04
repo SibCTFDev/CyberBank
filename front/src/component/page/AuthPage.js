@@ -21,12 +21,6 @@ function AuthPage (props) {
     const changeUserInput = (data, value) => 
         setUserInput({...userInput, [data]: value});
 
-    const loginChangeHandler = (event) => 
-        changeUserInput('login', event.target.value);
-
-    const passwordChangeHandler = (event) => 
-        changeUserInput('password', event.target.value);
-
     const login = () => {
         changeUserInput('error', '');
         postLogin({
@@ -71,16 +65,20 @@ function AuthPage (props) {
                 >
                     <Grid item className="AuthGridField">
                         <TextField
-                            onChange={loginChangeHandler}
+                            onChange={
+                                (event) => {changeUserInput('login', event.target.value)}
+                            }
                             label={"Name"}
                             value={userInput.login}
                             size="small"
                             fullWidth
                         />
                     </Grid>
-                    <Grid item className="AuthGridField">
+                    <Grid item className="AuthGridField" sx={{marginBottom: "0"}}>
                         <TextField
-                            onChange={passwordChangeHandler}
+                            onChange={
+                                (event) => {changeUserInput('password', event.target.value)}
+                            }
                             label={"Password"}
                             value={userInput.password}
                             type="password"
@@ -88,7 +86,10 @@ function AuthPage (props) {
                             fullWidth
                         />
                     </Grid>
-                    <Grid item className="AuthGridField"  sx={{marginBottom: "0"}}>
+                    <Grid item className="AuthErrorLabel">
+                        {userInput.error}
+                    </Grid>
+                    <Grid item className="AuthGridField">
                         <Button
                             variant="outlined"
                             onClick={login}
@@ -96,9 +97,6 @@ function AuthPage (props) {
                         >
                             Sign in
                         </Button>
-                    </Grid>
-                    <Grid item className="AuthErrorLabel">
-                        {userInput.error}
                     </Grid>
                     <Grid item>
                         <Button

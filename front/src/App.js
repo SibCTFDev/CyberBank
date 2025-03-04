@@ -30,7 +30,7 @@ function App() {
   const PROFILE = "/profile/";
   const PRODUCT = "/product/";
   const LOGIN = "/login/";
-  const REGISTER = "/register";
+  const REGISTER = "/register/";
 
   useEffect(() => {
     setProducts( [
@@ -124,7 +124,7 @@ function App() {
             REGISTER={REGISTER}
           />
           }/>
-        <Route exact path={REGISTER} element={<RegisterPage/>}/>
+        <Route exact path={REGISTER} element={<RegisterPage LOGIN={LOGIN}/>}/>
         <Route exact path="*" element={<Navigate to={LOGIN} replace/>}/>
       </Routes>
     </Router>
