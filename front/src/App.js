@@ -17,12 +17,13 @@ import useTheme from "./Theme"
 
 
 function App() {
+  const [authorized, setAuthorized] = useState(false);
   const [products, setProducts] = useState(null);
+  const [userData, setUserData] = useState({});
 
   const HOME = "/";
   const PROFILE = "/profile/";
   const PRODUCT = "/product/";
-  const AUTH = "/schedules/";
 
   useEffect(() => {
     setProducts( [
@@ -91,24 +92,31 @@ function App() {
           price: 330,
       }
     ]);
-  }, []); 
+  }, []);
+
+  const appContent = authorized ? (
+    <Router className="AppFrame">
+      <Navbar
+        HOME={HOME}
+        PROFILE={PROFILE}
+        PRODUCT={PRODUCT}
+      />
+      <Routes>
+          <Route exact path={HOME} element={<HomePage products={products}/>}/>
+          <Route exact path={PROFILE} element={<ProfilePage products={products}/>}/>
+          <Route exact path={PRODUCT} element={<ProductPage/>}/>
+      </Routes>
+    </Router>
+  ) : (
+    <AuthPage
+      setAuthorized={setAuthorized}
+    />
+  )
 
   return (
     <div className="App">
       <ThemeProvider theme={useTheme()}>
-        <Router className="AppFrame">
-          <Navbar
-            HOME={HOME}
-            PROFILE={PROFILE}
-            PRODUCT={PRODUCT}
-          />
-          <Routes>
-              <Route exact path={HOME} element={<HomePage products={products}/>}/>
-              <Route exact path={PROFILE} element={<ProfilePage products={products}/>}/>
-              <Route exact path={PRODUCT} element={<ProductPage/>}/>
-              <Route exact path={AUTH} element={<AuthPage/>}/>
-          </Routes>
-        </Router>
+        {appContent}
       </ThemeProvider>
     </div>
   );

@@ -12,6 +12,9 @@ export class User {
     @Column({length: 128})
     password!: string
 
-    @Column()
+    @Column({default: 3})
     balance!: number
+
+    @Column({default: 0})
+    productCount!: number
 }

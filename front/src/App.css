@@ -69,3 +69,41 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.AuthPageGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.AuthTextGrid {
+  width: max(20%, 300px);
+  height: 350px;
+  min-height: 350px;
+  padding: 20px;
+  margin-bottom: 10vh;
+  border-radius: 0.375rem;
+}
+
+.AuthLabel {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0;
+  text-align: center;
+  height: 68px;
+  width: max(20%, 200px);
+  padding: 20px 0;
+}
+
+.AuthGridField {
+  margin-bottom: 36px;
+  width: 100%;
+  min-width: 100%;
+}
+
+.SignUpButton {
+  font-size: 20px !important;
+}

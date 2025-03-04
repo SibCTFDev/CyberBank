@@ -19,7 +19,8 @@ export class AuthController {
 
         if (user && bcrypt.compareSync(loginData.password, user.password)) {
             response.status(201).cookie("jwt", getToken(user.id, user.name), {httpOnly: true});
-            return 'Logged in successfully';
+            const {password, ...rest} = user;
+            return rest;
         } else return httpResponse401(response);
     }
 

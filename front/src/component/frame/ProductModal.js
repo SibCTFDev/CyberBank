@@ -21,6 +21,7 @@ class ProductModal extends Component {
                         <Grid item sx={{maxWidth: "40%"}}>
                             <Paper elevation={0} sx={{
                                 bgcolor: "color.secondary",
+                                color: "color.text",
                                 maxHeight: "100%",
                                 padding: "12px", 
                                 overflowY: "auto", 
@@ -33,6 +34,7 @@ class ProductModal extends Component {
                         <Grid item>
                              <Paper elevation={0} sx={{
                                     bgcolor: "color.secondary",
+                                    color: "color.text",
                                     maxHeight: "30%",
                                     padding: "12px", 
                                 }}>
@@ -40,6 +42,7 @@ class ProductModal extends Component {
                             </Paper>
                             <Paper elevation={0} sx={{
                                     bgcolor: "color.secondary",
+                                    color: "color.text",
                                     marginTop: "20px",
                                     maxHeight: "10%",
                                     padding: "12px", 
@@ -48,6 +51,7 @@ class ProductModal extends Component {
                             </Paper>
                             <Paper elevation={0} sx={{
                                     bgcolor: "color.secondary",
+                                    color: "color.text",
                                     marginTop: "20px",
                                     maxHeight: "10%",
                                     padding: "12px", 

@@ -12,7 +12,6 @@ export async function createUser(name: string, password: string) : Promise<User 
 
     user.name = name;
     user.password = password;
-    user.balance = 3;
 
     await userRepo.save(user);
     
