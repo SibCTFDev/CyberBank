@@ -24,7 +24,8 @@ function App() {
     Cookies.get('jwt') !== undefined
   );
   
-  const [products, setProducts] = useState(null);
+  const [products, setProducts] = useState({});
+  const [userData, setUserData] = useState({});
 
   const HOME = "/";
   const PROFILE = "/profile/";
@@ -109,7 +110,12 @@ function App() {
         PRODUCT={PRODUCT}
       />
       <Routes>
-          <Route exact path={HOME} element={<HomePage products={products}/>}/>
+          <Route exact path={HOME} element={
+            <HomePage 
+              products={products}
+              setUserData={setUserData}
+            />
+            }/>
           <Route exact path={PROFILE} element={<ProfilePage products={products}/>}/>
           <Route exact path={PRODUCT} element={<ProductPage/>}/>
           <Route exact path="*" element={<Navigate to={HOME} replace/>}/>

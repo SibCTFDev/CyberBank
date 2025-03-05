@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import express from 'express';
 import { useExpressServer } from 'routing-controllers';
 
-import { Authorized } from "./service/authService";
 import { getControllersList } from "./utils";
+import Authorized from './security/validator';
 import Env from "./env";
 
 

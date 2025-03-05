@@ -6,6 +6,8 @@ import { productRepo } from "./repo";
 import { userRepo } from "./repo";
 import { commentRepo } from "./repo";
 
+import { encrypt } from "../security/service";
+
 
 export async function createUser(name: string, password: string) : Promise<User | null> {
     const user = new User();
@@ -13,7 +15,12 @@ export async function createUser(name: string, password: string) : Promise<User 
     user.name = name;
     user.password = password;
 
-    await userRepo.save(user);
+    try {
+        await userRepo.save(user);
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
     
     return user;
 }
@@ -24,19 +31,22 @@ export async function createProduct(
     const product = new Product();
 
     product.description = description;
-    product.content = content;
     product.price = price;
     product.image_path = "image gen func does not ready yet";
     product.created = Date();
-    
     const user =  await userRepo.findOneBy({id: user_id});
-
     if (user === null)
         return null;
 
     product.owner = user;
-
-    await productRepo.save(product);
+    
+    product.content = encrypt(content, user.password);
+    try {
+        await productRepo.save(product);
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
     
     return product;
 }
@@ -56,7 +66,12 @@ export async function createComment(content: string, user_id: number, product_id
     comment.user = user;
     comment.product = product;
 
-    await commentRepo.save(comment);
+    try {
+        await commentRepo.save(comment);
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
     
     return comment;
 }

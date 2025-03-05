@@ -6,7 +6,9 @@ import { UserParams } from '../interface/userParams';
 import bcrypt from 'bcryptjs';
 
 import { getUserByName, createUser } from '../db/service';
-import { getToken, httpResponse401, hash, checkUserParams } from '../utils';
+import { httpResponse401, checkUserParams } from '../utils';
+import { hash, getToken } from '../security/service';
+import Const from '../strings';
 
 
 @JsonController()
@@ -19,7 +21,7 @@ export class AuthController {
 
         if (user && bcrypt.compareSync(loginData.password, user.password)) {
             response.status(201).cookie("jwt", getToken(user.id, user.name));
-            return `Successfully logged in`;
+            return Const.LOGIN_SUCCESS;
         } else return httpResponse401(response);
     }
 
@@ -28,10 +30,10 @@ export class AuthController {
         if (checkUserParams(registerData)) return httpResponse401(response);
         
         if (await getUserByName(registerData.username)) 
-            return httpResponse401(response, 'Such user is already exist');
+            return httpResponse401(response, Const.USER_EXISTS);
 
         const user = await createUser(registerData.username, hash(registerData.password));
-        if (!user) return 'Unable to create user. Please try again';
+        if (!user) return Const.UNABLE_TO_CREATE_USER;
 
         response.status(201);
         return `User ${user.name} successfully created`;
@@ -50,7 +52,7 @@ export class LogoutController {
     @Get('/logout')
     logout(@Res() response: Response) {
         response.clearCookie('jwt')
-        return 'Logged out successfully';
+        return Const.LOGOUT_SUCCESS;
     }
 
 }
