@@ -2,7 +2,7 @@ import {Grid2 as Grid} from "@mui/material";
 
 
 function ProductCard(props) {
-    const {product, image_id, description, price, selectProduct, openModal} = props;
+    const {product, selectProduct, openModal} = props;
 
     const selectProductHandler = () => {
         selectProduct(product);
@@ -33,13 +33,13 @@ function ProductCard(props) {
                 alignItems="center"
             >
                 <Grid item>
-                    <img src={"/product.png"} alt={image_id} width={150}/>
+                    <img src={"/product.png"} alt={product.imageId} width={150}/>
+                </Grid>
+                <Grid item className="ProductDescription" sx={{color: "color.text"}}>
+                    {product.description}
                 </Grid>
                 <Grid item sx={{color: "color.text"}}>
-                    {description}
-                </Grid>
-                <Grid item sx={{color: "color.text"}}>
-                    {`${price} $`}
+                    {`${product.price}$`}
                 </Grid>
             </Grid>
         </Grid>

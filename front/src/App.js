@@ -18,14 +18,20 @@ import AuthPage from './component/page/AuthPage';
 import RegisterPage from './component/page/RegisterPage';
 import useTheme from "./Theme"
 
+import { getUser, getProducts } from './requests';
+
 
 function App() {
   const [authorized, setAuthorized] = useState(
     Cookies.get('jwt') !== undefined
   );
   
-  const [products, setProducts] = useState({});
+  const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState({});
+  const [loadings, setLoadings] = useState({
+    productsLoading: false,
+    userLoading: false,
+  })
 
   const HOME = "/";
   const PROFILE = "/profile/";
@@ -33,74 +39,57 @@ function App() {
   const LOGIN = "/login/";
   const REGISTER = "/register/";
 
-  useEffect(() => {
-    setProducts( [
-      {
-          id: 1,
-          image_id: 1,
-          owner: "user1",
-          description: "description",
-          content: "secret",
-          price: 200,
+  const setProductLoading = (state) =>
+    setLoadings({...loadings, productsLoading: state});
+
+  const setUserLoading = (state) =>
+    setLoadings({...loadings, userLoading: state});
+
+  const getProductsInfo = () => {
+    setProductLoading(true);
+    getProducts({
+      handler: (data) => {
+        setProducts(data);
+        setProductLoading(false);
       },
-      {
-          id: 2,
-          image_id: 2,
-          owner: "user2",
-          description: "description2",
-          content: "secret",
-          price: 150,
-      },
-      {
-          id: 3,
-          image_id: 3,
-          owner: "user1",
-          description: "description3",
-          content: "secret",
-          price: 220,
-      },
-      {
-          id: 4,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 5,
-          image_id: 4,
-          owner: "user1",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 6,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 7,
-          image_id: 4,
-          owner: "user1",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 8,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
+      excHandler: () => {
+        if (products.length !== 0)
+          setProductLoading(false);
       }
-    ]);
-  }, []);
+    });
+  };
+
+  const getUserInfo = () => {
+    setUserLoading(true);
+    getUser({
+      handler: (data) => {
+        setUserData(data);
+        setUserLoading(false);
+      },
+      excHandler: () => {
+        if (Object.entries(userData).length !== 0)
+          setUserLoading(false); 
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (authorized) {
+      getProductsInfo();
+      getUserInfo();
+    }
+  }, [authorized]);
+
+  useEffect(() => {
+      const intervalId = setInterval(() => {
+        if (authorized) {
+          getProductsInfo();
+          getUserInfo();
+        }
+      }, 5000);
+
+      return () => clearInterval(intervalId);
+  });
 
   const appContent = authorized ? (
     <Router className="AppFrame">
@@ -116,7 +105,12 @@ function App() {
               setUserData={setUserData}
             />
             }/>
-          <Route exact path={PROFILE} element={<ProfilePage products={products}/>}/>
+          <Route exact path={PROFILE} element={
+            <ProfilePage 
+              products={products}
+              userData={userData}
+            />
+          }/>
           <Route exact path={PRODUCT} element={<ProductPage/>}/>
           <Route exact path="*" element={<Navigate to={HOME} replace/>}/>
       </Routes>

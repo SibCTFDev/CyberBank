@@ -32,11 +32,22 @@ export class ProductsController {
             if (product.owner.id === user.id)
                 product.content = decrypt(product.content, user.password);
             
+            //TODO implement image saving logic
+            // tmp code fragment
+            
+            (<any>product).imageId = 1;
+            (<any>product) = deleteField(product, 'image_path');
+            //
+
+            (<any>product).seller = product.owner.name;
+            (<any>product).ownerId = product.owner.id;
+            
             return deleteField(product, 'owner');
         });
 
     }
 
+    @Authorized()
     @Get('/:pid/buy')
     buyProduct(@Param('pid') pid: number) {
         // TODO
@@ -46,6 +57,7 @@ export class ProductsController {
 
 @JsonController()
 export class CreateProductController {
+    @Authorized()
     @Post('/products/create')
     createProduct(@Body({ required: true }) data: ProductObject) {
         // TODO

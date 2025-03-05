@@ -34,7 +34,9 @@ export async function createProduct(
     product.price = price;
     product.image_path = "image gen func does not ready yet";
     product.created = Date();
+
     const user =  await userRepo.findOneBy({id: user_id});
+    
     if (user === null)
         return null;
 

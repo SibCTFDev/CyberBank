@@ -22,6 +22,11 @@ function AuthPage (props) {
         setUserInput({...userInput, [data]: value});
 
     const login = () => {
+        if (userInput.login === '' || userInput.password === '') {
+            changeUserInput('error', 'Empty fields');
+            return;
+        }
+        
         changeUserInput('error', '');
         postLogin({
             data: {username: userInput.login, password: userInput.password},
