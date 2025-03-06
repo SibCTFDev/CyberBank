@@ -7,7 +7,14 @@ const HOST = process.env.REACT_APP_API_HOST || "/api";
 export const LOGIN = `${HOST}/login`;
 export const REGISTER = `${HOST}/register`;
 export const LOGOUT = `${HOST}/logout`;
+export const USER = `${HOST}/user`;
+export const PRODUCTS = `${HOST}/products`;
 
+
+function handleResponse401() {
+    Cookies.remove('jwt');
+    window.location.reload();
+}
 
 export function postLogin({data, handler, excHandler}) {
     axios
@@ -51,5 +58,31 @@ export function getLogout({handler, excHandler}) {
         })
         .catch(err => {
             excHandler(err);
+        });
+};
+
+export function getUser({handler, excHandler}) {
+    axios
+        .get(USER, {withCredentials: true})
+        .then(res => {
+            handler(res.data);
+        })
+        .catch(err => {
+            handleResponse401();
+            if (excHandler)
+                excHandler(err);
+        });
+};
+
+export function getProducts({handler, excHandler}) {
+    axios
+        .get(PRODUCTS, {withCredentials: true})
+        .then(res => {
+            handler(res.data);
+        })
+        .catch(err => {
+            handleResponse401();
+            if (excHandler)
+                excHandler(err);
         });
 };

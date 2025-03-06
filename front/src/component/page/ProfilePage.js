@@ -6,11 +6,9 @@ import ProductModal from "../frame/ProductModal";
 
 
 function ProfilePage(props) {
-    const {products} = props;
+    const {products, userData} = props;
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [modalOpened, setModalOpened] = useState(false);
-
-    const userProduct = products.filter((product) => product.owner==="user1");
 
     const toggleModal = (state) => () => {
         setModalOpened(state);
@@ -23,7 +21,7 @@ function ProfilePage(props) {
     return (
         <>
         <Grid sx={{padding: "12px", bgcolor: "color.secondary", height: "10vh"}}>
-            <Grid container spacing="24px" sx={{
+            <Grid container spacing="36px" sx={{
                 padding: "12px",
                 bgcolor: "color.background",
                 border: "1px solid",
@@ -31,10 +29,13 @@ function ProfilePage(props) {
                 overflowY: "auto"
             }}>
                 <Grid item>
-                    User1
+                    {`User: ${userData.name}`}
                 </Grid>
                 <Grid item>
-                    Balance: 300 $
+                    {`Balance: ${userData.balance}$`}
+                </Grid>
+                <Grid item>
+                    {`Creation available: ${3-userData.productCount}`}
                 </Grid>
             </Grid>
         </Grid>
@@ -45,16 +46,18 @@ function ProfilePage(props) {
             className="PageFrame"
             sx={{bgcolor: "color.secondary", height: "80vh"}}
         >   
-            {userProduct.map(product => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                            image_id={product.image_id}
-                            description={product.description}
-                            price={product.price}
-                            selectProduct={setSelectedProduct}
-                            openModal={toggleModal(true)}
-                        />
+            {products.filter(
+                (products) => products.seller === userData.name
+            ).map(product => (
+                <ProductCard
+                    key={product.id}
+                    product={product}
+                    image_id={product.image_id}
+                    description={product.description}
+                    price={product.price}
+                    selectProduct={setSelectedProduct}
+                    openModal={toggleModal(true)}
+                />
                 ))}
         </Grid>
         <Drawer

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InitMigrate1741058807476 implements MigrationInterface {
-    name = 'InitMigrate1741058807476'
+export class InitMigrate1741160098914 implements MigrationInterface {
+    name = 'InitMigrate1741160098914'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -19,14 +19,13 @@ export class InitMigrate1741058807476 implements MigrationInterface {
             CREATE TABLE "product" (
                 "id" SERIAL NOT NULL,
                 "description" character varying(300) NOT NULL,
-                "content" character varying(300) NOT NULL,
+                "content" character varying NOT NULL,
                 "price" integer NOT NULL,
                 "image_path" character varying NOT NULL,
                 "created" character varying NOT NULL,
                 "updated" character varying,
                 "ownerId" integer,
                 CONSTRAINT "UQ_69e8391440e57f0f02aedc91b64" UNIQUE ("content"),
-                CONSTRAINT "REL_cbb5d890de1519efa20c42bcd5" UNIQUE ("ownerId"),
                 CONSTRAINT "PK_bebc9158e480b949565b4dc7a82" PRIMARY KEY ("id")
             )
         `);
@@ -37,22 +36,20 @@ export class InitMigrate1741058807476 implements MigrationInterface {
                 "created" character varying NOT NULL,
                 "userId" integer,
                 "productId" integer,
-                CONSTRAINT "REL_c0354a9a009d3bb45a08655ce3" UNIQUE ("userId"),
-                CONSTRAINT "REL_1e9f24a68bd2dcd6390a400839" UNIQUE ("productId"),
                 CONSTRAINT "PK_0b0e4bbc8415ec426f87f3a88e2" PRIMARY KEY ("id")
             )
         `);
         await queryRunner.query(`
             ALTER TABLE "product"
-            ADD CONSTRAINT "FK_cbb5d890de1519efa20c42bcd52" FOREIGN KEY ("ownerId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_cbb5d890de1519efa20c42bcd52" FOREIGN KEY ("ownerId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "comment"
-            ADD CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_c0354a9a009d3bb45a08655ce3b" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "comment"
-            ADD CONSTRAINT "FK_1e9f24a68bd2dcd6390a4008395" FOREIGN KEY ("productId") REFERENCES "product"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_1e9f24a68bd2dcd6390a4008395" FOREIGN KEY ("productId") REFERENCES "product"("id") ON DELETE CASCADE ON UPDATE NO ACTION
         `);
     }
 

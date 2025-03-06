@@ -23,6 +23,11 @@ function RegisterPage (props) {
         setUserInput({...userInput, [data]: value});
 
     const register = () => {
+        if (userInput.login === '' || userInput.password === '') {
+            changeUserInput('error', 'Empty fields');
+            return;
+        }
+        
         if (userInput.password !== userInput.confirmPass) {
             changeUserInput('error', 'Password missmatch');
             return;

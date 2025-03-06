@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import Env from "../env";
+import Const from "../strings";
 
 
 const AppDataSource = new DataSource({
@@ -17,10 +18,10 @@ const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
     .then(() => {
-        console.log("Data Source has been initialized");
+        console.log(Const.DATA_SOURCE_INITIALIZED);
     })
     .catch((err: any) => {
-        console.error("Error during Data Source initialization", err);
+        console.error(Const.DATA_SOURCE_NOT_INITIALIZED, err);
     });
 
 export {AppDataSource}

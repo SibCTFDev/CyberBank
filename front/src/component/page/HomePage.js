@@ -23,15 +23,12 @@ function HomePage(props) {
             <ProductCard
                 key={product.id}
                 product={product}
-                image_id={product.image_id}
-                description={product.description}
-                price={product.price}
                 selectProduct={setSelectedProduct}
                 openModal={toggleModal(true)}
             />
         ))
     );
-        
+    
     return (
         <>
         <Grid
@@ -51,6 +48,7 @@ function HomePage(props) {
                 sx: {
                     bgcolor: "color.secondary",
                     height: "40vh",
+                    maxHeight: "40vh",
                 }
             }}
         >

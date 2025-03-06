@@ -80,7 +80,7 @@
 
 .AuthTextGrid {
   width: max(20%, 300px);
-  height: 350px;
+  height: 360px;
   min-height: 350px;
   padding: 20px;
   margin-bottom: 10vh;
@@ -119,4 +119,38 @@
 
 .SignUpButton {
   font-size: 20px !important;
+}
+
+.ProductDescription {
+  max-height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ModalField {
+  max-height: 40%;
+  min-height: 42px;
+  max-width: 100%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+}
+
+.ModalDescriptionGrid {
+  max-width: 40%;
+  width: 40%;
+  max-height: 30vh;
+}
+
+.ModalDescription {
+  overflow-y: auto;
+  height: 100%;
+  max-height: 100%;
+  padding: 12px;
+}
+
+.ModalButtonGrid {
+  height: 100%;
+  max-width: 15vw;
+  min-width: min(15vw, 200px);
 }
