@@ -28,10 +28,6 @@ function App() {
   
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState({});
-  const [loadings, setLoadings] = useState({
-    productsLoading: false,
-    userLoading: false,
-  })
 
   const HOME = "/";
   const PROFILE = "/profile/";
@@ -39,36 +35,18 @@ function App() {
   const LOGIN = "/login/";
   const REGISTER = "/register/";
 
-  const setProductLoading = (state) =>
-    setLoadings({...loadings, productsLoading: state});
-
-  const setUserLoading = (state) =>
-    setLoadings({...loadings, userLoading: state});
-
   const getProductsInfo = () => {
-    setProductLoading(true);
     getProducts({
       handler: (data) => {
         setProducts(data);
-        setProductLoading(false);
-      },
-      excHandler: () => {
-        if (products.length !== 0)
-          setProductLoading(false);
       }
     });
   };
 
   const getUserInfo = () => {
-    setUserLoading(true);
     getUser({
       handler: (data) => {
         setUserData(data);
-        setUserLoading(false);
-      },
-      excHandler: () => {
-        if (Object.entries(userData).length !== 0)
-          setUserLoading(false); 
       }
     });
   };
@@ -97,12 +75,12 @@ function App() {
         HOME={HOME}
         PROFILE={PROFILE}
         PRODUCT={PRODUCT}
+        balance={userData.balance}
       />
       <Routes>
           <Route exact path={HOME} element={
             <HomePage 
               products={products}
-              setUserData={setUserData}
             />
             }/>
           <Route exact path={PROFILE} element={

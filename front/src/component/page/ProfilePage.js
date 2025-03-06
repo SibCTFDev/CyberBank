@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {Grid2 as Grid, Drawer} from '@mui/material';
 
 import ProductCard from "../field/ProductCard";

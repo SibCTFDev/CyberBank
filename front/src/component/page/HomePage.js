@@ -28,7 +28,7 @@ function HomePage(props) {
             />
         ))
     );
-        
+    
     return (
         <>
         <Grid

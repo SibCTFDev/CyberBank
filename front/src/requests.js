@@ -69,7 +69,8 @@ export function getUser({handler, excHandler}) {
         })
         .catch(err => {
             handleResponse401();
-            excHandler(err);
+            if (excHandler)
+                excHandler(err);
         });
 };
 
@@ -81,6 +82,7 @@ export function getProducts({handler, excHandler}) {
         })
         .catch(err => {
             handleResponse401();
-            excHandler(err);
+            if (excHandler)
+                excHandler(err);
         });
 };
