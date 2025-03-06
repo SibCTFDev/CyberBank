@@ -6,9 +6,8 @@ import { Controller, JsonController, Get, Post,
 import { Request, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
-import { productRepo } from '../db/repo';
-import { getUserByName } from '../db/service';
-import { httpResponse401, deleteField } from '../utils';
+import { getUserByName, getProducts } from '../db/service';
+import { httpResponse401, httpResponse500, deleteField } from '../utils';
 import { decrypt } from '../security/service';
 import Env from '../env';
 import Const from '../strings';
@@ -19,9 +18,9 @@ export class ProductsController {
     @Authorized()
     @Get()
     async getProducts(@Req() request: Request, @Res() response: Response) {
-        const products = await productRepo.find();
+        const products = await getProducts();
 
-        if (products === undefined) return [];
+        if (!products) return httpResponse500(response, Const.DB_REQUEST_ERROR);
 
         const token = jwt.verify(request.cookies.jwt, Env.SESSION_SECRET);
         const user = await getUserByName((<JwtPayload>token).username);

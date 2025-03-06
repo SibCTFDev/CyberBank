@@ -78,6 +78,15 @@ export async function createComment(content: string, user_id: number, product_id
     return comment;
 }
 
-export async function getUserByName(name: string) {
+export async function getUserByName(name: string) : Promise<User | null> {
     return await userRepo.findOneBy({name: name});
+}
+
+export async function getProducts() : Promise<Product[] | null> {
+    const products = await productRepo.find();
+
+    if (!products) return null
+    if (products === undefined) return [];
+    
+    return products;
 }

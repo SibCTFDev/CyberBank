@@ -3,6 +3,7 @@ import { AuthController, LogoutController } from './controller/authControllers';
 import { ProductsController, CreateProductController } from './controller/productsControllers';
 import { ExampleController } from './controller/exampleController';
 import { UserParams } from './interface/userParams';
+import Const from './strings';
 
 
 export function getControllersList() : Function[] {
@@ -12,14 +13,21 @@ export function getControllersList() : Function[] {
     ];
 }
 
+function setHttpResponse(response: Response, statusCode: number, message: string) : string {
+    response.status(statusCode);
+    return message;
+}
+
 export function httpResponse400(response:Response, message?: string) : string {
-    response.status(400);
-    return message ?? 'Bad request';
+    return setHttpResponse(response, 400, message ?? Const.BAD_REQUEST);
 }
 
 export function httpResponse401(response:Response, message?: string) : string {
-    response.status(401);
-    return message ?? 'Invalid credentials';
+    return setHttpResponse(response, 401, message ?? Const.INVALID_CREDENTIALS);
+}
+
+export function httpResponse500(response:Response, message?: string) : string {
+    return setHttpResponse(response, 500, message ?? Const.SERVER_ERROR);
 }
 
 export function checkUserParams(data: UserParams) : boolean {
