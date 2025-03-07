@@ -1,15 +1,15 @@
 import { Response } from 'express';
 import { AuthController, LogoutController } from './controller/authControllers';
 import { ProductsController, CreateProductController } from './controller/productsControllers';
-import { ExampleController } from './controller/exampleController';
 import { UserParams } from './interface/userParams';
+import { ProductObject } from './interface/productObject';
 import Const from './strings';
 
 
 export function getControllersList() : Function[] {
     return [
         AuthController, LogoutController, 
-        ProductsController, CreateProductController, ExampleController
+        ProductsController, CreateProductController
     ];
 }
 
@@ -33,6 +33,23 @@ export function httpResponse500(response:Response, message?: string) : string {
 export function checkUserParams(data: UserParams) : boolean {
     if (data.username === undefined || data.password === undefined)
         return true;
+
+    if (data.username === '' || data.password === '')
+        return true;
+
+    return false;
+}
+
+export function checkProductObject(data: ProductObject) : boolean {
+    if (data.content === undefined || 
+        data.description === undefined || 
+        data.price === undefined)
+        return true;
+
+        if (data.content === '' || 
+            data.description === '' || 
+            data.price < 0 || data.price > 10**4)
+            return true;
 
     return false;
 }

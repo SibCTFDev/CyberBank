@@ -18,6 +18,41 @@ function ProfilePage(props) {
         setModalOpened(false);
     };
 
+    const productsContent = products.filter(
+        product => product.seller === userData.name).length === 0 ? (
+        <Grid 
+            container
+            alignContent="center"
+            justifyContent="center"
+            className="PageFrame"
+            sx={{color: "color.text", bgcolor: "color.secondary", height: "80vh"}}
+        >
+            <p>You haven't created any products yet :( Don't miss out on customers</p>
+        </Grid>
+    ) : (
+        <Grid
+            container
+            direction="row"
+            justifyContent="flex-start"
+            className="PageFrame"
+            sx={{bgcolor: "color.secondary", height: "80vh"}}
+        >   
+            {products.filter(
+                product => product.seller === userData.name
+            ).map(product => (
+                <ProductCard
+                    key={product.id}
+                    product={product}
+                    image_id={product.image_id}
+                    description={product.description}
+                    price={product.price}
+                    selectProduct={setSelectedProduct}
+                    openModal={toggleModal(true)}
+                />
+                ))}
+        </Grid>
+    );
+
     return (
         <>
         <Grid sx={{padding: "12px", bgcolor: "color.secondary", height: "10vh"}}>
@@ -39,27 +74,7 @@ function ProfilePage(props) {
                 </Grid>
             </Grid>
         </Grid>
-        <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            className="PageFrame"
-            sx={{bgcolor: "color.secondary", height: "80vh"}}
-        >   
-            {products.filter(
-                (products) => products.seller === userData.name
-            ).map(product => (
-                <ProductCard
-                    key={product.id}
-                    product={product}
-                    image_id={product.image_id}
-                    description={product.description}
-                    price={product.price}
-                    selectProduct={setSelectedProduct}
-                    openModal={toggleModal(true)}
-                />
-                ))}
-        </Grid>
+        {productsContent}
         <Drawer
             anchor="bottom"
             open={modalOpened}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import {Button, Grid2 as Grid, TextField} from '@mui/material';
 import { postRegister } from '../../requests';
+import Cookies from 'js-cookie';
 
 
 function RegisterPage (props) {
@@ -23,11 +24,6 @@ function RegisterPage (props) {
         setUserInput({...userInput, [data]: value});
 
     const register = () => {
-        if (userInput.login === '' || userInput.password === '') {
-            changeUserInput('error', 'Empty fields');
-            return;
-        }
-        
         if (userInput.password !== userInput.confirmPass) {
             changeUserInput('error', 'Password missmatch');
             return;
@@ -40,6 +36,7 @@ function RegisterPage (props) {
                 gotoPage(LOGIN);
             },
             excHandler: (err) => {
+                Cookies.remove('jwt');
                 changeUserInput('error', err.response.data);
             }
         });

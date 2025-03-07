@@ -63,6 +63,27 @@
   background: #ff5d11; 
 }
 
+/* Chrome; Safari */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* IE и Edge */
+input[type="number"]::-ms-clear {
+  display: none;
+}
+
+label {
+  color: #2c2c2e !important;
+}
+
 .PageFrame {
   height: 90vh;
   padding: 12px;
@@ -123,6 +144,7 @@
 
 .ProductDescription {
   max-height: 50px;
+  height: 50px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -153,4 +175,17 @@
   height: 100%;
   max-width: 15vw;
   min-width: min(15vw, 200px);
+}
+
+.ProductErrorLabel {
+  width: 100%;
+  height: auto;
+  max-height: 46px;
+  max-width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  margin-bottom: 12px;
+  font-size: 22px !important;
 }

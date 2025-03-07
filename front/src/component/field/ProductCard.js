@@ -16,11 +16,12 @@ function ProductCard(props) {
                 bgcolor: "color.background",
                 border: "1px solid",
                 borderColor: "color.text",
+                borderRadius: "0.375rem",
                 padding: "12px",
                 margin: "12px",
                 width: "200px",
                 minWidth: "200px",
-                height: "280px",
+                height: "300px",
                 
             }}
             onClick={selectProductHandler} 

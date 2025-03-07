@@ -7,6 +7,7 @@ import { userRepo } from "./repo";
 import { commentRepo } from "./repo";
 
 import { encrypt } from "../security/service";
+import Image from "../imageGen";
 
 
 export async function createUser(name: string, password: string) : Promise<User | null> {
@@ -25,21 +26,23 @@ export async function createUser(name: string, password: string) : Promise<User 
     return user;
 }
 
+export async function updateUser(user: User, param: {balance?: number, 
+    productCount?: number}) : Promise<User | null> {
+    if (param.balance) user.balance = param.balance;
+    if (param.productCount) user.productCount = param.productCount;
+
+    return await userRepo.save(user);
+}
+
 export async function createProduct(
         description: string, content: string, 
-        price: number, user_id: number) : Promise<Product | null> {
+        price: number, user: User) : Promise<Product | null> {
     const product = new Product();
 
     product.description = description;
     product.price = price;
-    product.image_path = "image gen func does not ready yet";
+    product.image_path = Image.generate(content, user.id);
     product.created = Date();
-
-    const user =  await userRepo.findOneBy({id: user_id});
-    
-    if (user === null)
-        return null;
-
     product.owner = user;
     
     product.content = encrypt(content, user.password);
@@ -53,18 +56,12 @@ export async function createProduct(
     return product;
 }
 
-export async function createComment(content: string, user_id: number, product_id: number) : Promise<Comment | null> {
+export async function createComment(content: string, 
+    user: User, product: Product) : Promise<Comment | null> {
     const comment = new Comment();
 
     comment.content = content;
     comment.created = Date();
-    
-    const user =  await userRepo.findOneBy({id: user_id});
-    const product =  await productRepo.findOneBy({id: product_id});
-
-    if (user === null || product === null)
-        return null;
-
     comment.user = user;
     comment.product = product;
 

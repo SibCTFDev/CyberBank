@@ -89,7 +89,12 @@ function App() {
               userData={userData}
             />
           }/>
-          <Route exact path={PRODUCT} element={<ProductPage/>}/>
+          <Route exact path={PRODUCT} element={
+            <ProductPage
+              getProductsInfo={getProductsInfo}
+              getUserInfo={getUserInfo}
+            />
+            }/>
           <Route exact path="*" element={<Navigate to={HOME} replace/>}/>
       </Routes>
     </Router>
