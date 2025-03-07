@@ -9,80 +9,65 @@ export const REGISTER = `${HOST}/register`;
 export const LOGOUT = `${HOST}/logout`;
 export const USER = `${HOST}/user`;
 export const PRODUCTS = `${HOST}/products`;
+export const CREATE = `${HOST}/products/create`
 
 
-function handleResponse401() {
-    Cookies.remove('jwt');
-    window.location.reload();
+function handleResponse401(err) {
+    if (err.response.status === 401) {
+        Cookies.remove('jwt');
+        window.location.reload();
+    };
+}
+
+function get({url, handler, excHandler, handle401}) {
+    axios
+        .get(url, {withCredentials: true})
+        .then(res => {
+            if (handler) handler(res.data);
+        })
+        .catch(err => {
+            if (handle401) handleResponse401(err);
+            if (excHandler) excHandler(err);
+        });
+}
+
+function post({url, data, handler, excHandler, handle401}) {
+    axios
+        .post(url, JSON.stringify(data), {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(res => {
+            if (handler) handler(res.data);
+        })
+        .catch(err => {
+            if (handle401) handleResponse401(err);
+            if (excHandler) excHandler(err);
+        });
+}
+
+export function getLogout({handler, excHandler}) {
+    get({url: LOGOUT, handler: handler, excHandler: excHandler});
+}
+
+export function getUser({handler, excHandler}) {
+    get({url: USER, handler: handler, excHandler: excHandler, handle401: true});
+}
+
+export function getProducts({handler, excHandler}) {
+    get({url: PRODUCTS, handler: handler, excHandler: excHandler, handle401: true});
 }
 
 export function postLogin({data, handler, excHandler}) {
-    axios
-        .post(LOGIN, JSON.stringify(data), {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then(res => {
-            handler(res.data);
-        })
-        .catch(err => {
-            Cookies.remove('jwt');
-            excHandler(err);
-        });
-};
+    post({url: LOGIN, data: data, handler: handler, excHandler: excHandler});
+}
 
 export function postRegister({data, handler, excHandler}) {
-    axios
-        .post(REGISTER, JSON.stringify(data), {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        .then(res => {
-            handler(res.data);
-        })
-        .catch(err => {
-            Cookies.remove('jwt');
-            excHandler(err);
-        });
-};
+    post({url: REGISTER, data: data, handler: handler, excHandler: excHandler});
+}
 
-export function getLogout({handler, excHandler}) {
-    axios
-        .get(LOGOUT, {withCredentials: true})
-        .then(res => {
-            handler(res.data);
-        })
-        .catch(err => {
-            excHandler(err);
-        });
-};
-
-export function getUser({handler, excHandler}) {
-    axios
-        .get(USER, {withCredentials: true})
-        .then(res => {
-            handler(res.data);
-        })
-        .catch(err => {
-            handleResponse401();
-            if (excHandler)
-                excHandler(err);
-        });
-};
-
-export function getProducts({handler, excHandler}) {
-    axios
-        .get(PRODUCTS, {withCredentials: true})
-        .then(res => {
-            handler(res.data);
-        })
-        .catch(err => {
-            handleResponse401();
-            if (excHandler)
-                excHandler(err);
-        });
-};
+export function postCreate({data, handler, excHandler}) {
+    post({url: CREATE, data: data, handler: handler, excHandler: excHandler, handle401: true});
+}

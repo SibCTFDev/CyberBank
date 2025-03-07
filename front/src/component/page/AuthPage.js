@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import {Button, Grid2 as Grid, TextField} from '@mui/material';
 import { postLogin } from '../../requests';
+import Cookies from 'js-cookie';
 
 
 function AuthPage (props) {
@@ -22,11 +23,6 @@ function AuthPage (props) {
         setUserInput({...userInput, [data]: value});
 
     const login = () => {
-        if (userInput.login === '' || userInput.password === '') {
-            changeUserInput('error', 'Empty fields');
-            return;
-        }
-        
         changeUserInput('error', '');
         postLogin({
             data: {username: userInput.login, password: userInput.password},
@@ -34,6 +30,7 @@ function AuthPage (props) {
                 setAuthorized(true);
             },
             excHandler: (err) => {
+                Cookies.remove('jwt');
                 changeUserInput('error', err.response.data);
             }
         });

@@ -18,7 +18,16 @@ function HomePage(props) {
         setModalOpened(false);
     };
 
-    const pageContent = products === null ? null : (
+    const pageContent = products.length === 0 ? (
+        <Grid 
+            container
+            alignContent="center"
+            justifyContent="center"
+            sx={{width: "100%", height: "100%", color: "color.text"}}
+        >
+            <p>You're late, all the <s>flags</s> products have been bought up :(</p>
+        </Grid>
+    ) : (
         products.map(product => (
             <ProductCard
                 key={product.id}
