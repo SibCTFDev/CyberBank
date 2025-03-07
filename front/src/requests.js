@@ -9,7 +9,8 @@ export const REGISTER = `${HOST}/register`;
 export const LOGOUT = `${HOST}/logout`;
 export const USER = `${HOST}/user`;
 export const PRODUCTS = `${HOST}/products`;
-export const CREATE = `${HOST}/products/create`
+export const CREATE = `${HOST}/products/create`;
+export const BUY = `${HOST}/products/%s/buy`;
 
 
 function handleResponse401(err) {
@@ -58,6 +59,10 @@ export function getUser({handler, excHandler}) {
 
 export function getProducts({handler, excHandler}) {
     get({url: PRODUCTS, handler: handler, excHandler: excHandler, handle401: true});
+}
+
+export function getBuy({pid, handler, excHandler}) {
+    get({url: BUY.replace('%s', pid), handler: handler, excHandler: excHandler, handle401: true});
 }
 
 export function postLogin({data, handler, excHandler}) {

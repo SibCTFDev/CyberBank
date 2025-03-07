@@ -25,7 +25,7 @@ function renderText(label, multiline, handler, type = "string") {
 }
 
 function ProductPage(props) {
-    const {getUserInfo, getProductsInfo} = props;
+    const {refreshInfo} = props;
     const [userInput, setUserInput] = useState({
         description: '',
         content: '',
@@ -46,8 +46,7 @@ function ProductPage(props) {
         postCreate({
             data: productData,
             handler: () => {
-                getUserInfo();
-                getProductsInfo();
+                refreshInfo();
                 setModalOpened(true);
             },
             excHandler: (err) => {

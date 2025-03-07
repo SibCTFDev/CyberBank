@@ -44,8 +44,8 @@ export async function createProduct(
     product.image_path = Image.generate(content, user.id);
     product.created = Date();
     product.owner = user;
-    
     product.content = encrypt(content, user.password);
+    
     try {
         await productRepo.save(product);
     } catch (err) {
@@ -54,6 +54,18 @@ export async function createProduct(
     }
     
     return product;
+}
+
+export async function updateProduct(product: Product, param: {
+    description?: string, owner?: User, price?: number, image_path?: string
+    }) : Promise<Product | null> {
+    if (param.description) product.description = param.description;
+    if (param.owner) product.owner = param.owner;
+    if (param.price) product.price = param.price;
+    if (param.image_path) product.image_path = param.image_path;
+    
+    product.updated = Date();
+    return await productRepo.save(product);
 }
 
 export async function createComment(content: string, 
@@ -86,4 +98,8 @@ export async function getProducts() : Promise<Product[] | null> {
     if (products === undefined) return [];
     
     return products;
+}
+
+export async function getProductById(pid: number) : Promise<Product | null> {
+    return await productRepo.findOneBy({id: pid});
 }

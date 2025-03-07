@@ -14,10 +14,6 @@ function ProfilePage(props) {
         setModalOpened(state);
     };
 
-    const modalButtonHandler = () => {
-        setModalOpened(false);
-    };
-
     const productsContent = products.filter(
         product => product.seller === userData.name).length === 0 ? (
         <Grid 
@@ -89,8 +85,7 @@ function ProfilePage(props) {
             <ProductModal
                 product={selectedProduct}
                 closeModal={toggleModal(false)}
-                buttonText="Ok"
-                buttonHandler={modalButtonHandler}
+                userName={userData.name}
             />
         </Drawer>
         </>

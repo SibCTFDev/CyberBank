@@ -5,7 +5,9 @@ import { Controller, JsonController, Get, Post,
 import { Request, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
-import { getUserByName, getProducts, createProduct, updateUser } from '../db/service';
+import { getUserByName, getProducts, createProduct, 
+    getProductById, updateUser, updateProduct
+} from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
     deleteField, checkProductObject 
 } from '../utils';
@@ -48,9 +50,24 @@ export class ProductsController {
 
     @Authorized()
     @Get('/:pid/buy')
-    buyProduct(@Param('pid') pid: number) {
-        // TODO
-        return `perform payment logic and change product ${pid} owner; returns updated product`;
+    async buyProduct(@Param('pid') pid: number, @Req() request: Request,
+        @Res() response: Response) {
+        const tokenPayload = getTokenPayload(request.cookies.jwt);
+        const user = await getUserByName(tokenPayload.username);
+        
+        if (!user) return httpResponse401(response, Const.BAD_SESSION);
+
+        const product = await getProductById(pid);
+        
+        if (!product) return httpResponse400(response, Const.BAD_REQUEST);
+        if (product.owner.id === user.id) return httpResponse400(response, Const.SELFBUY_ERROR);
+        if (user.balance < product.price) return httpResponse400(response, Const.NOT_ENOUGH_MONEY);
+        
+        updateUser(product.owner, {balance: product.owner.balance + product.price});
+        updateUser(user, {balance: user.balance - product.price});
+        updateProduct(product, {owner: user});
+        
+        return Const.BUY_SUCCESS;
     }
 }
 
