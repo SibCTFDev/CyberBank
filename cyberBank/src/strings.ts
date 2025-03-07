@@ -9,6 +9,9 @@ enum Const {
     LIMIT_OVER = 'Product creation limit is over',
     LOGIN_SUCCESS = 'Logged in successfully',
     LOGOUT_SUCCESS = 'Logged out successfully',
+    NOT_ENOUGH_MONEY = 'Not enough money',
+    SELFBUY_ERROR = 'You cannot buy your product',
+    BUY_SUCCESS = 'Product bought successfully',
     DATA_SOURCE_INITIALIZED = 'Data Source has been initialized',
     DATA_SOURCE_NOT_INITIALIZED = 'Error during Data Source initialization',
 }

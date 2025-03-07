@@ -2,7 +2,7 @@ import {Grid2 as Grid} from "@mui/material";
 
 
 function ProductCard(props) {
-    const {product, selectProduct, openModal} = props;
+    const {product, selectProduct, openModal, ownProduct} = props;
 
     const selectProductHandler = () => {
         selectProduct(product);
@@ -40,7 +40,7 @@ function ProductCard(props) {
                     {product.description}
                 </Grid>
                 <Grid item sx={{color: "color.text"}}>
-                    {`${product.price}$`}
+                    {ownProduct ? (<u>Your own</u>) : `${product.price}$`}
                 </Grid>
             </Grid>
         </Grid>

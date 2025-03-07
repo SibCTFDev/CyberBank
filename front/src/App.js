@@ -51,11 +51,18 @@ function App() {
     });
   };
 
+  const refreshInfo = () => {
+    if (authorized) {
+      getProductsInfo();
+      getUserInfo();
+    };
+  };
+
   useEffect(() => {
     if (authorized) {
       getProductsInfo();
       getUserInfo();
-    }
+    };
   }, [authorized]);
 
   useEffect(() => {
@@ -81,6 +88,8 @@ function App() {
           <Route exact path={HOME} element={
             <HomePage 
               products={products}
+              userData={userData}
+              refreshInfo={refreshInfo}
             />
             }/>
           <Route exact path={PROFILE} element={
@@ -91,8 +100,7 @@ function App() {
           }/>
           <Route exact path={PRODUCT} element={
             <ProductPage
-              getProductsInfo={getProductsInfo}
-              getUserInfo={getUserInfo}
+              refreshInfo={refreshInfo}
             />
             }/>
           <Route exact path="*" element={<Navigate to={HOME} replace/>}/>
