@@ -30,8 +30,13 @@ export async function updateUser(user: User, param: {balance?: number,
     productCount?: number}) : Promise<User | null> {
     if (param.balance) user.balance = param.balance;
     if (param.productCount) user.productCount = param.productCount;
-
-    return await userRepo.save(user);
+    
+    try {
+        return await userRepo.save(user);
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
 }
 
 export async function createProduct(
@@ -65,7 +70,13 @@ export async function updateProduct(product: Product, param: {
     if (param.image_path) product.image_path = param.image_path;
     
     product.updated = Date();
-    return await productRepo.save(product);
+
+    try {
+        return await productRepo.save(product);
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
 }
 
 export async function createComment(content: string, 
@@ -93,11 +104,9 @@ export async function getUserByName(name: string) : Promise<User | null> {
 
 export async function getProducts() : Promise<Product[] | null> {
     const products = await productRepo.find();
-
     if (!products) return null
-    if (products === undefined) return [];
     
-    return products;
+    return products ?? [];
 }
 
 export async function getProductById(pid: number) : Promise<Product | null> {

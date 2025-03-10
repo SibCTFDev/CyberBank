@@ -36,7 +36,7 @@ export class AuthController {
         if (!user) return Const.UNABLE_TO_CREATE_USER;
 
         response.status(201);
-        return `User ${user.name} successfully created`;
+        return Const.REGISTER_SUCCESS;
     }
 
     @Post('/reset')

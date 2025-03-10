@@ -9,6 +9,7 @@ function useTheme() {
                 secondary: " #2c2c2e",
                 background: " #ff3d00",
                 text: " #ffd600",
+                accent: " #00bfae",
             }
         },
         components: {

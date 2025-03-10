@@ -35,7 +35,6 @@ export class ProductsController {
             
             //TODO implement image saving logic
             // tmp code fragment
-            
             (<any>product).imageId = 1;
             (<any>product) = deleteField(product, 'image_path');
             //
@@ -83,7 +82,7 @@ export class CreateProductController {
         const user = await getUserByName(tokenPayload.username);
 
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
-        if (user.productCount === 3) return httpResponse400(response, Const.LIMIT_OVER);
+        if (user.productCount > 2) return httpResponse400(response, Const.LIMIT_OVER);
 
         const product = await createProduct(data.description, data.content, data.price, user);
         if (!product) return httpResponse400(response);

@@ -26,6 +26,6 @@ useExpressServer(app, {
     controllers: getControllersList(),
 });
 
-const port = 8000;
+const port = 37773;
 
 app.listen(port, () => console.log(`Cyber Bank is running on port ${port}`));

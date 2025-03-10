@@ -8,6 +8,7 @@ enum Const {
     UNABLE_TO_CREATE_USER = 'Unable to create user. Please try again',
     LIMIT_OVER = 'Product creation limit is over',
     LOGIN_SUCCESS = 'Logged in successfully',
+    REGISTER_SUCCESS= 'User successfully created',
     LOGOUT_SUCCESS = 'Logged out successfully',
     NOT_ENOUGH_MONEY = 'Not enough money',
     SELFBUY_ERROR = 'You cannot buy your product',

@@ -37,6 +37,9 @@ export function checkUserParams(data: UserParams) : boolean {
     if (data.username === '' || data.password === '')
         return true;
 
+    if (data.username.length > 32 || data.password.length > 128)
+        return true;
+
     return false;
 }
 

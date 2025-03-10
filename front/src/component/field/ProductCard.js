@@ -39,9 +39,15 @@ function ProductCard(props) {
                 <Grid item className="ProductDescription" sx={{color: "color.text"}}>
                     {product.description}
                 </Grid>
-                <Grid item sx={{color: "color.text"}}>
-                    {ownProduct ? (<u>Your own</u>) : `${product.price}$`}
-                </Grid>
+                {ownProduct ? (
+                    <Grid item sx={{color: "color.accent"}}>
+                        <u>Your own</u>
+                    </Grid>
+                ) : (
+                    <Grid item sx={{color: "color.text"}}>
+                        {`${product.price}$`}
+                    </Grid>
+                )}
             </Grid>
         </Grid>
         

@@ -73,6 +73,9 @@ function AuthPage (props) {
                             label={"Name"}
                             value={userInput.login}
                             size="small"
+                            slotProps={{htmlInput: {
+                                maxLength: 32
+                            }}}
                             fullWidth
                         />
                     </Grid>
@@ -85,6 +88,9 @@ function AuthPage (props) {
                             value={userInput.password}
                             type="password"
                             size="small"
+                            slotProps={{htmlInput: {
+                                maxLength: 32
+                            }}}
                             fullWidth
                         />
                     </Grid>
