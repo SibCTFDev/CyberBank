@@ -4,7 +4,9 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
+import Cookies from 'js-cookie';
 import {ThemeProvider} from '@mui/material/styles';
 import '@fontsource/vt323';
 
@@ -13,102 +15,116 @@ import HomePage from './component/page/HomePage';
 import ProductPage from './component/page/ProductPage';
 import ProfilePage from './component/page/ProfilePage';
 import AuthPage from './component/page/AuthPage';
+import RegisterPage from './component/page/RegisterPage';
 import useTheme from "./Theme"
+
+import { getUser, getProducts } from './requests';
 
 
 function App() {
-  const [products, setProducts] = useState(null);
+  const [authorized, setAuthorized] = useState(
+    Cookies.get('jwt') !== undefined
+  );
+  
+  const [products, setProducts] = useState([]);
+  const [userData, setUserData] = useState({});
 
   const HOME = "/";
   const PROFILE = "/profile/";
   const PRODUCT = "/product/";
-  const AUTH = "/schedules/";
+  const LOGIN = "/login/";
+  const REGISTER = "/register/";
+
+  const getProductsInfo = () => {
+    getProducts({
+      handler: (data) => {
+        setProducts(data);
+      }
+    });
+  };
+
+  const getUserInfo = () => {
+    getUser({
+      handler: (data) => {
+        setUserData(data);
+      }
+    });
+  };
+
+  const refreshInfo = () => {
+    if (authorized) {
+      getProductsInfo();
+      getUserInfo();
+    };
+  };
 
   useEffect(() => {
-    setProducts( [
-      {
-          id: 1,
-          image_id: 1,
-          owner: "user1",
-          description: "description",
-          content: "secret",
-          price: 200,
-      },
-      {
-          id: 2,
-          image_id: 2,
-          owner: "user2",
-          description: "description2",
-          content: "secret",
-          price: 150,
-      },
-      {
-          id: 3,
-          image_id: 3,
-          owner: "user1",
-          description: "description3",
-          content: "secret",
-          price: 220,
-      },
-      {
-          id: 4,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 5,
-          image_id: 4,
-          owner: "user1",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 6,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 7,
-          image_id: 4,
-          owner: "user1",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      },
-      {
-          id: 8,
-          image_id: 4,
-          owner: "user2",
-          description: "description4",
-          content: "secret",
-          price: 330,
-      }
-    ]);
-  }, []); 
+    if (authorized) {
+      getProductsInfo();
+      getUserInfo();
+    };
+  }, [authorized]);
+
+  useEffect(() => {
+      const intervalId = setInterval(() => {
+        if (authorized) {
+          getProductsInfo();
+          getUserInfo();
+        }
+      }, 5000);
+
+      return () => clearInterval(intervalId);
+  });
+
+  const appContent = authorized ? (
+    <Router className="AppFrame">
+      <Navbar
+        HOME={HOME}
+        PROFILE={PROFILE}
+        PRODUCT={PRODUCT}
+        balance={userData.balance}
+      />
+      <Routes>
+          <Route exact path={HOME} element={
+            <HomePage 
+              products={products}
+              userData={userData}
+              refreshInfo={refreshInfo}
+            />
+            }/>
+          <Route exact path={PROFILE} element={
+            <ProfilePage 
+              products={products}
+              userData={userData}
+            />
+          }/>
+          <Route exact path={PRODUCT} element={
+            <ProductPage
+              refreshInfo={refreshInfo}
+            />
+            }/>
+          <Route exact path="*" element={<Navigate to={HOME} replace/>}/>
+      </Routes>
+    </Router>
+  ) : (
+    <Router className="AppFrame">
+      <Routes>
+        <Route exact path={LOGIN} element={
+          <AuthPage 
+            setAuthorized={setAuthorized}
+            REGISTER={REGISTER}
+          />
+          }/>
+        <Route exact path={REGISTER} element={<RegisterPage LOGIN={LOGIN}/>}/>
+        <Route exact path="*" element={<Navigate to={LOGIN} replace/>}/>
+      </Routes>
+    </Router>
+  )
 
   return (
     <div className="App">
       <ThemeProvider theme={useTheme()}>
-        <Router className="AppFrame">
-          <Navbar
-            HOME={HOME}
-            PROFILE={PROFILE}
-            PRODUCT={PRODUCT}
-          />
-          <Routes>
-              <Route exact path={HOME} element={<HomePage products={products}/>}/>
-              <Route exact path={PROFILE} element={<ProfilePage products={products}/>}/>
-              <Route exact path={PRODUCT} element={<ProductPage/>}/>
-              <Route exact path={AUTH} element={<AuthPage/>}/>
-          </Routes>
-        </Router>
+        {appContent}
       </ThemeProvider>
     </div>
   );

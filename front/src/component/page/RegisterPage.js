@@ -1,33 +1,39 @@
 import { useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import {Button, Grid2 as Grid, TextField} from '@mui/material';
-import { postLogin } from '../../requests';
+import { postRegister } from '../../requests';
 import Cookies from 'js-cookie';
 
 
-function AuthPage (props) {
-    const {setAuthorized, REGISTER} = props;
+function RegisterPage (props) {
+    const {LOGIN} = props;
 
     const [userInput, setUserInput] = useState({
         login: '',
         password: '',
+        confirmPass: '',
         error: ''
     });
     
     const navigate = useNavigate();
-    const gotoPage = (value) => () => {
+    const gotoPage = (value) => {
         navigate(value);
     };
 
     const changeUserInput = (data, value) => 
         setUserInput({...userInput, [data]: value});
 
-    const login = () => {
+    const register = () => {
+        if (userInput.password !== userInput.confirmPass) {
+            changeUserInput('error', 'Password missmatch');
+            return;
+        }
+
         changeUserInput('error', '');
-        postLogin({
+        postRegister({
             data: {username: userInput.login, password: userInput.password},
             handler: () => {
-                setAuthorized(true);
+                gotoPage(LOGIN);
             },
             excHandler: (err) => {
                 Cookies.remove('jwt');
@@ -48,7 +54,7 @@ function AuthPage (props) {
                 <img src={"/logo.png"} alt="Logo" width={120}/>
             </Grid>
             <Grid className="AuthLabel" item sx={{color: "color.text"}}>
-                SIGN IN TO CYBERBANK
+                SIGN UP TO CYBERBANK
             </Grid>
             <Grid
                 className="AuthTextGrid"
@@ -73,13 +79,10 @@ function AuthPage (props) {
                             label={"Name"}
                             value={userInput.login}
                             size="small"
-                            slotProps={{htmlInput: {
-                                maxLength: 32
-                            }}}
                             fullWidth
                         />
                     </Grid>
-                    <Grid item className="AuthGridField" sx={{marginBottom: "0"}}>
+                    <Grid item className="AuthGridField">
                         <TextField
                             onChange={
                                 (event) => {changeUserInput('password', event.target.value)}
@@ -88,9 +91,18 @@ function AuthPage (props) {
                             value={userInput.password}
                             type="password"
                             size="small"
-                            slotProps={{htmlInput: {
-                                maxLength: 32
-                            }}}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item className="AuthGridField" sx={{marginBottom: "0"}}>
+                        <TextField
+                            onChange={
+                                (event) => {changeUserInput('confirmPass', event.target.value)}
+                            }
+                            label={"Confirm password"}
+                            value={userInput.confirmPass}
+                            type="password"
+                            size="small"
                             fullWidth
                         />
                     </Grid>
@@ -100,17 +112,8 @@ function AuthPage (props) {
                     <Grid item className="AuthGridField">
                         <Button
                             variant="outlined"
-                            onClick={login}
+                            onClick={register}
                             fullWidth
-                        >
-                            Sign in
-                        </Button>
-                    </Grid>
-                    <Grid item>
-                        <Button
-                            className="SignUpButton"
-                            variant="outlined"
-                            onClick={gotoPage(REGISTER)}
                         >
                             Sign up
                         </Button>
@@ -121,4 +124,4 @@ function AuthPage (props) {
     );
 }
 
-export default AuthPage;
+export default RegisterPage;

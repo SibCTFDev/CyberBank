@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm";
 import { User } from "./user";
 import { Product } from "./product";
 
@@ -8,11 +8,11 @@ export class Comment {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @OneToOne(() => User)
+    @ManyToOne(() => User, {onDelete: "CASCADE", eager: true})
     @JoinColumn()
     user!: User
 
-    @OneToOne(() => Product)
+    @ManyToOne(() => Product, {onDelete: "CASCADE", eager: true})
     @JoinColumn()
     product!: Product
 

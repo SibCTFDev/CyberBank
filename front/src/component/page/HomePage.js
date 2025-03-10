@@ -6,7 +6,7 @@ import ProductModal from "../frame/ProductModal";
 
 
 function HomePage(props) {
-    const {products} = props;
+    const {products, userData, refreshInfo} = props;
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [modalOpened, setModalOpened] = useState(false);
 
@@ -14,24 +14,27 @@ function HomePage(props) {
         setModalOpened(state);
     };
 
-    const buyProductHandler = () => {
-        setModalOpened(false);
-    };
-
-    const pageContent = products === null ? null : (
+    const pageContent = products.length === 0 ? (
+        <Grid 
+            container
+            alignContent="center"
+            justifyContent="center"
+            sx={{width: "100%", height: "100%", color: "color.text"}}
+        >
+            <p>You're late, all the <s>flags</s> products have been bought up :(</p>
+        </Grid>
+    ) : (
         products.map(product => (
             <ProductCard
                 key={product.id}
                 product={product}
-                image_id={product.image_id}
-                description={product.description}
-                price={product.price}
                 selectProduct={setSelectedProduct}
                 openModal={toggleModal(true)}
+                ownProduct={product.seller === userData.name}
             />
         ))
     );
-        
+    
     return (
         <>
         <Grid
@@ -51,14 +54,15 @@ function HomePage(props) {
                 sx: {
                     bgcolor: "color.secondary",
                     height: "40vh",
+                    maxHeight: "40vh",
                 }
             }}
         >
             <ProductModal
                 product={selectedProduct}
                 closeModal={toggleModal(false)}
-                buttonText="Buy"
-                buttonHandler={buyProductHandler}
+                userName={userData.name}
+                refreshInfo={refreshInfo}
             />
         </Drawer>
         </>

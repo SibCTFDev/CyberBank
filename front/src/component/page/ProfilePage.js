@@ -6,38 +6,26 @@ import ProductModal from "../frame/ProductModal";
 
 
 function ProfilePage(props) {
-    const {products} = props;
+    const {products, userData} = props;
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [modalOpened, setModalOpened] = useState(false);
-
-    const userProduct = products.filter((product) => product.owner==="user1");
 
     const toggleModal = (state) => () => {
         setModalOpened(state);
     };
 
-    const modalButtonHandler = () => {
-        setModalOpened(false);
-    };
-
-    return (
-        <>
-        <Grid sx={{padding: "12px", bgcolor: "color.secondary", height: "10vh"}}>
-            <Grid container spacing="24px" sx={{
-                padding: "12px",
-                bgcolor: "color.background",
-                border: "1px solid",
-                borderColor: "color.text",
-                overflowY: "auto"
-            }}>
-                <Grid item>
-                    User1
-                </Grid>
-                <Grid item>
-                    Balance: 300 $
-                </Grid>
-            </Grid>
+    const productsContent = products.filter(
+        product => product.seller === userData.name).length === 0 ? (
+        <Grid 
+            container
+            alignContent="center"
+            justifyContent="center"
+            className="PageFrame"
+            sx={{color: "color.text", bgcolor: "color.secondary", height: "80vh"}}
+        >
+            <p>You haven't created any products yet :( Don't miss out on customers</p>
         </Grid>
+    ) : (
         <Grid
             container
             direction="row"
@@ -45,18 +33,44 @@ function ProfilePage(props) {
             className="PageFrame"
             sx={{bgcolor: "color.secondary", height: "80vh"}}
         >   
-            {userProduct.map(product => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                            image_id={product.image_id}
-                            description={product.description}
-                            price={product.price}
-                            selectProduct={setSelectedProduct}
-                            openModal={toggleModal(true)}
-                        />
+            {products.filter(
+                product => product.seller === userData.name
+            ).map(product => (
+                <ProductCard
+                    key={product.id}
+                    product={product}
+                    image_id={product.image_id}
+                    description={product.description}
+                    price={product.price}
+                    selectProduct={setSelectedProduct}
+                    openModal={toggleModal(true)}
+                />
                 ))}
         </Grid>
+    );
+
+    return (
+        <>
+        <Grid sx={{padding: "12px", bgcolor: "color.secondary", height: "10vh"}}>
+            <Grid container spacing="36px" sx={{
+                padding: "12px",
+                bgcolor: "color.background",
+                border: "1px solid",
+                borderColor: "color.text",
+                overflowY: "auto"
+            }}>
+                <Grid item>
+                    {`User: ${userData.name}`}
+                </Grid>
+                <Grid item>
+                    {`Balance: ${userData.balance}$`}
+                </Grid>
+                <Grid item>
+                    {`Creation available: ${3-userData.productCount}`}
+                </Grid>
+            </Grid>
+        </Grid>
+        {productsContent}
         <Drawer
             anchor="bottom"
             open={modalOpened}
@@ -71,8 +85,7 @@ function ProfilePage(props) {
             <ProductModal
                 product={selectedProduct}
                 closeModal={toggleModal(false)}
-                buttonText="Ok"
-                buttonHandler={modalButtonHandler}
+                userName={userData.name}
             />
         </Drawer>
         </>

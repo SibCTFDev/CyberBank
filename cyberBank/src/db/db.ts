@@ -1,14 +1,16 @@
 import { DataSource } from "typeorm";
+import Env from "../env";
+import Const from "../strings";
 
 
 const AppDataSource = new DataSource({
     type: "postgres",
     host: "cyber-bank-postgres",
     port: 5432,
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    logging: process.env.DEBUG !== null,
+    username: Env.DB_USER,
+    password: Env.DB_PASS,
+    database: Env.DB_NAME,
+    logging: Env.DEBUG !== null,
     synchronize: false,
     entities: ["build/db/entity/*{.js,.ts}"],
     migrations: ["build/db/migration/*{.js,.ts}"],
@@ -16,10 +18,10 @@ const AppDataSource = new DataSource({
 
 AppDataSource.initialize()
     .then(() => {
-        console.log("Data Source has been initialized!");
+        console.log(Const.DATA_SOURCE_INITIALIZED);
     })
     .catch((err: any) => {
-        console.error("Error during Data Source initialization", err);
+        console.error(Const.DATA_SOURCE_NOT_INITIALIZED, err);
     });
 
 export {AppDataSource}

@@ -5,28 +5,48 @@ function useTheme() {
     return createTheme({
         palette: {
             color: {
-                primary: " #ff2a6d",
-                secondary: " #d1f7ff",
-                background: " #05d9e8",
-                text: " #01012b",
+                primary: " #ff3d00",
+                secondary: " #2c2c2e",
+                background: " #ff3d00",
+                text: " #ffd600",
+                accent: " #00bfae",
             }
         },
         components: {
             MuiTextField: {
                 styleOverrides: {
-                    root: {background: " #05d9e8"}
+                    root: {background: " #ffd600", borderRadius: "0.375rem"},
                 }
             },
             MuiInputLabel: {
                 styleOverrides: {
-                    root: {color: "#005678"}
+                    root: {color: " #2c2c2e"},
                 }
             },
-            MuiInputBase: {
+            MuiButton: {
                 styleOverrides: {
-                    root: {color: "#005678"}
+                    root: {
+                        color: " #ffd600",
+                        borderColor: " #ffd600"
+                    }
                 }
-            }
+            },
+            MuiOutlinedInput: {
+                styleOverrides: {
+                    root: {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: " #2c2c2e",
+                            color: " #2c2c2e",
+                        },
+                        "&.Mui-focused": {
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                borderColor: " #2c2c2e",
+                                color: " #2c2c2e",
+                            }
+                        },
+                    }
+                }
+            },
         }
     });
 }
