@@ -5,11 +5,14 @@ import { Controller, JsonController, Get, Post,
 import { Request, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
+import { CommentObject } from '../interface/commentObject';
 import { getUserByName, getProducts, createProduct, 
-    getProductById, updateUser, updateProduct
+    getProductById, updateUser, updateProduct, 
+    createComment, getProductComments
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
-    deleteField, checkProductObject 
+    deleteField, checkProductObject , checkCommentObject,
+    processCommentsToResponse
 } from '../utils';
 import { decrypt, getTokenPayload } from '../security/service';
 import Const from '../strings';
@@ -29,16 +32,16 @@ export class ProductsController {
 
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
 
+        for (var i=0; i < products.length; i++) {
+            const comments = await getProductComments(products[i]);
+            if (comments)
+                (<any>products[i]).comments = processCommentsToResponse(comments);
+        }
+
         return products.map(product => {
             if (product.owner.id === user.id)
                 product.content = decrypt(product.content, user.password);
-            
-            //TODO implement image saving logic
-            // tmp code fragment
-            (<any>product).imageId = 1;
-            (<any>product) = deleteField(product, 'image_path');
-            //
-
+          
             (<any>product).seller = product.owner.name;
             (<any>product).ownerId = product.owner.id;
             
@@ -70,10 +73,10 @@ export class ProductsController {
     }
 }
 
-@JsonController()
+@JsonController('/products')
 export class CreateProductController {
     @Authorized()
-    @Post('/products/create')
+    @Post('/create')
     async createNewProduct(@Body({ required: true }) data: ProductObject, 
         @Req() request: Request, @Res() response: Response) {
         if (checkProductObject(data)) return httpResponse400(response);
@@ -90,5 +93,25 @@ export class CreateProductController {
         updateUser(user, {productCount: user.productCount+1});
         (<any>product).ownerId = user.id;
         return deleteField(product, 'owner');
+    }
+
+    @Authorized()
+    @Post('/:pid/comment')
+    async createComment(@Param('pid') pid: number, 
+        @Body({ required: true }) data: CommentObject, 
+        @Req() request: Request, @Res() response: Response) {
+        if (checkCommentObject(data)) return httpResponse400(response);
+
+        const tokenPayload = getTokenPayload(request.cookies.jwt);
+        const user = await getUserByName(tokenPayload.username);
+        const product = await getProductById(pid);
+
+        if (!user) return httpResponse401(response, Const.BAD_SESSION);
+        if (!product) return httpResponse400(response);
+
+        const comment = await createComment(data.content, user, product);
+        if (!comment) return httpResponse500(response);
+
+        return Const.COMMENT_SUCCESS;
     }
 }

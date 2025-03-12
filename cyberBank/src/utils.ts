@@ -3,6 +3,8 @@ import { AuthController, LogoutController } from './controller/authControllers';
 import { ProductsController, CreateProductController } from './controller/productsControllers';
 import { UserParams } from './interface/userParams';
 import { ProductObject } from './interface/productObject';
+import { CommentObject } from './interface/commentObject';
+import { Comment } from './db/entity/comment';
 import Const from './strings';
 
 
@@ -57,7 +59,28 @@ export function checkProductObject(data: ProductObject) : boolean {
     return false;
 }
 
+export function checkCommentObject(data: CommentObject) : boolean {
+    if (data.content === undefined || 
+        data.content.length >= 100 ||
+        data.content.length < 1)
+        return true;
+
+    return false;
+}
+
 export function deleteField<T extends object, K extends keyof T>(dict: T, field: K) : Omit<T, K> {
     const {[field]: _, ...rest} = dict;
     return rest
+}
+
+export function processCommentsToResponse(comments: Comment[] | null) : object[] {
+    if (!comments) return [];
+    
+    return comments.map(comment => {
+        (<any>comment).productId = comment.product.id;
+        (<any>comment).userName = comment.user.name;
+
+        (<any>comment) = deleteField(comment, 'product')
+        return deleteField(comment, 'user');
+    })
 }

@@ -13,6 +13,7 @@ enum Const {
     NOT_ENOUGH_MONEY = 'Not enough money',
     SELFBUY_ERROR = 'You cannot buy your product',
     BUY_SUCCESS = 'Product bought successfully',
+    COMMENT_SUCCESS= 'Comment successfully sent',
     DATA_SOURCE_INITIALIZED = 'Data Source has been initialized',
     DATA_SOURCE_NOT_INITIALIZED = 'Error during Data Source initialization',
 }
