@@ -6,7 +6,7 @@ class Image {
 
     static generate(content: string, uid: number): string {
 
-        const imagePath = `some/path/image_${uid}${(new Date()).getTime()}.png`;
+        const imagePath = `/app/src/static/images/image_${uid}${(new Date()).getTime()}.png`;
 
         this.genNoiseImage(imagePath);
         this.encodeImage(imagePath, content);
