@@ -8,13 +8,14 @@ import { ProductObject } from '../interface/productObject';
 import { CommentObject } from '../interface/commentObject';
 import { getUserByName, getProducts, createProduct, 
     getProductById, updateUser, updateProduct, 
-    createComment, getProductComments
+    createComment
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
     deleteField, checkProductObject , checkCommentObject,
-    processCommentsToResponse
+    processProductsToResponse
 } from '../utils';
-import { decrypt, getTokenPayload } from '../security/service';
+import { getTokenPayload } from '../security/service';
+import WebSocketController from './webSocketController';
 import Const from '../strings';
 
 
@@ -32,22 +33,10 @@ export class ProductsController {
 
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
 
-        for (var i=0; i < products.length; i++) {
-            const comments = await getProductComments(products[i]);
-            if (comments)
-                (<any>products[i]).comments = processCommentsToResponse(comments);
-        }
-
-        return products.map(product => {
-            if (product.owner.id === user.id)
-                product.content = decrypt(product.content, user.password);
-          
-            (<any>product).seller = product.owner.name;
-            (<any>product).ownerId = product.owner.id;
-            
-            return deleteField(product, 'owner');
-        });
-
+        const processedProducts = await processProductsToResponse(products, user);
+        if (!processedProducts) return httpResponse500(response, Const.DB_REQUEST_ERROR)
+        
+        return processedProducts;
     }
 
     @Authorized()
@@ -68,6 +57,8 @@ export class ProductsController {
         updateUser(product.owner, {balance: product.owner.balance + product.price});
         updateUser(user, {balance: user.balance - product.price});
         updateProduct(product, {owner: user});
+
+        WebSocketController.update();
         
         return Const.BUY_SUCCESS;
     }
@@ -92,6 +83,9 @@ export class CreateProductController {
 
         updateUser(user, {productCount: user.productCount+1});
         (<any>product).ownerId = user.id;
+        
+        WebSocketController.update();
+        
         return deleteField(product, 'owner');
     }
 
@@ -111,6 +105,8 @@ export class CreateProductController {
 
         const comment = await createComment(data.content, user, product);
         if (!comment) return httpResponse500(response);
+
+        WebSocketController.update();
 
         return Const.COMMENT_SUCCESS;
     }

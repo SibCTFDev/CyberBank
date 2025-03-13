@@ -102,6 +102,10 @@ export async function getUserByName(name: string) : Promise<User | null> {
     return await userRepo.findOneBy({name: name});
 }
 
+export async function getUserById(id: number) : Promise<User | null> {
+    return await userRepo.findOneBy({id: id});
+}
+
 export async function getProducts() : Promise<Product[] | null> {
     const products = await productRepo.find();
     if (!products) return null;

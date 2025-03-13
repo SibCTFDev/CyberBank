@@ -4,7 +4,11 @@ import { ProductsController, CreateProductController } from './controller/produc
 import { UserParams } from './interface/userParams';
 import { ProductObject } from './interface/productObject';
 import { CommentObject } from './interface/commentObject';
+import { decrypt } from './security/service';
+import { getProductComments } from './db/service';
 import { Comment } from './db/entity/comment';
+import { Product } from './db/entity/product';
+import { User } from './db/entity/user';
 import Const from './strings';
 
 
@@ -30,6 +34,13 @@ export function httpResponse401(response:Response, message?: string) : string {
 
 export function httpResponse500(response:Response, message?: string) : string {
     return setHttpResponse(response, 500, message ?? Const.SERVER_ERROR);
+}
+
+export function socketErrorMessage(message: string) : string {
+    return JSON.stringify({
+        type: 'error',
+        message: message
+    });
 }
 
 export function checkUserParams(data: UserParams) : boolean {
@@ -71,6 +82,25 @@ export function checkCommentObject(data: CommentObject) : boolean {
 export function deleteField<T extends object, K extends keyof T>(dict: T, field: K) : Omit<T, K> {
     const {[field]: _, ...rest} = dict;
     return rest
+}
+
+export async function processProductsToResponse(products: Product[], 
+    user: User) : Promise<object[] | null> {
+    for (var i=0; i < products.length; i++) {
+        const comments = await getProductComments(products[i]);
+        if (comments)
+            (<any>products[i]).comments = processCommentsToResponse(comments);
+    }
+    
+    return products.map(product => {
+        if (product.owner.id === user.id)
+            product.content = decrypt(product.content, user.password);
+        
+        (<any>product).seller = product.owner.name;
+        (<any>product).ownerId = product.owner.id;
+        
+        return deleteField(product, 'owner');
+    });
 }
 
 export function processCommentsToResponse(comments: Comment[] | null) : object[] {

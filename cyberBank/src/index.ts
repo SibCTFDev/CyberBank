@@ -1,8 +1,10 @@
 import 'reflect-metadata';
 import express from 'express';
+import http from 'http';
 import { useExpressServer } from 'routing-controllers';
 
 import { getControllersList } from "./utils";
+import WebSocketController from './controller/webSocketController';
 import Authorized from './security/validator';
 import Env from "./env";
 
@@ -21,6 +23,9 @@ const app = express();
 app.use(cookieParser());
 app.use(cors(corsOption));
 
+const server = http.createServer(app);
+WebSocketController.init(server);
+
 useExpressServer(app, {
     authorizationChecker: Authorized,
     controllers: getControllersList(),
@@ -28,4 +33,4 @@ useExpressServer(app, {
 
 const port = 37773;
 
-app.listen(port, () => console.log(`Cyber Bank is running on port ${port}`));
+server.listen(port, () => console.log(`Cyber Bank is running on port ${port}`));
