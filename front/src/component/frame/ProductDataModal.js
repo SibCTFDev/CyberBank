@@ -7,7 +7,7 @@ import { getBuy } from "../../requests";
 
 
 function ProductDataModal(props){
-    const {product, userName, closeModal, refreshInfo, openComments} = props;
+    const {product, userName, closeModal, openComments} = props;
     const [snackOpen, setSnackOpen] = useState(false);
     const [error, setError] = useState('');
 
@@ -23,7 +23,6 @@ function ProductDataModal(props){
             pid: product.id, 
             handler: () => {
                  closeModal();
-                 if (refreshInfo) refreshInfo();
                  navigate('/profile/');
             },
             excHandler: (err) => {
