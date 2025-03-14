@@ -12,7 +12,7 @@ import { getUserByName, getProducts, createProduct,
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
     deleteField, checkProductObject , checkCommentObject,
-    processProductsToResponse
+    prepareProductsToResponse
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
@@ -33,7 +33,7 @@ export class ProductsController {
 
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
 
-        const processedProducts = await processProductsToResponse(products, user);
+        const processedProducts = await prepareProductsToResponse(products, user);
         if (!processedProducts) return httpResponse500(response, Const.DB_REQUEST_ERROR)
         
         return processedProducts;
@@ -58,7 +58,7 @@ export class ProductsController {
         updateUser(user, {balance: user.balance - product.price});
         updateProduct(product, {owner: user});
 
-        WebSocketController.update();
+        WebSocketController.update(product.id);
         
         return Const.BUY_SUCCESS;
     }
@@ -106,7 +106,7 @@ export class CreateProductController {
         const comment = await createComment(data.content, user, product);
         if (!comment) return httpResponse500(response);
 
-        WebSocketController.update();
+        WebSocketController.update(product.id);
 
         return Const.COMMENT_SUCCESS;
     }

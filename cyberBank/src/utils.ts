@@ -44,7 +44,7 @@ export function socketErrorMessage(message: string) : string {
 }
 
 export function checkUserParams(data: UserParams) : boolean {
-    if (data.username === undefined || data.password === undefined)
+    if (!data.username || !data.password)
         return true;
 
     if (data.username === '' || data.password === '')
@@ -57,9 +57,7 @@ export function checkUserParams(data: UserParams) : boolean {
 }
 
 export function checkProductObject(data: ProductObject) : boolean {
-    if (data.content === undefined || 
-        data.description === undefined || 
-        data.price === undefined)
+    if (!data.content || !data.description || !data.price)
         return true;
 
         if (data.content === '' || 
@@ -71,7 +69,7 @@ export function checkProductObject(data: ProductObject) : boolean {
 }
 
 export function checkCommentObject(data: CommentObject) : boolean {
-    if (data.content === undefined || 
+    if (!data.content || 
         data.content.length >= 100 ||
         data.content.length < 1)
         return true;
@@ -84,26 +82,31 @@ export function deleteField<T extends object, K extends keyof T>(dict: T, field:
     return rest
 }
 
-export async function processProductsToResponse(products: Product[], 
+export async function prepareProductsToResponse(products: Product[], 
     user: User) : Promise<object[] | null> {
-    for (var i=0; i < products.length; i++) {
-        const comments = await getProductComments(products[i]);
-        if (comments)
-            (<any>products[i]).comments = processCommentsToResponse(comments);
+    for (var i = 0; i < products.length; i++) {
+        const product = await prepareProductToResponse(products[i], user)
+        if (product) products[i] = product;
     }
-    
-    return products.map(product => {
-        if (product.owner.id === user.id)
-            product.content = decrypt(product.content, user.password);
-        
-        (<any>product).seller = product.owner.name;
-        (<any>product).ownerId = product.owner.id;
-        
-        return deleteField(product, 'owner');
-    });
+    return products;
 }
 
-export function processCommentsToResponse(comments: Comment[] | null) : object[] {
+export async function prepareProductToResponse(product: Product, 
+    user: User) : Promise<any | null> {
+    const comments = await getProductComments(product);
+    if (comments)
+        (<any>product).comments = prepareCommentsToResponse(comments);
+
+    if (product.owner.id === user.id)
+        product.content = decrypt(product.content, user.password);
+    
+    (<any>product).seller = product.owner.name;
+    (<any>product).ownerId = product.owner.id;
+    
+    return deleteField(product, 'owner');
+}
+
+export function prepareCommentsToResponse(comments: Comment[] | null) : object[] {
     if (!comments) return [];
     
     return comments.map(comment => {

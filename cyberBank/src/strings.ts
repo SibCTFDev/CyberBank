@@ -6,6 +6,7 @@ enum Const {
     BAD_SESSION = 'Undefined session',
     USER_EXISTS = 'Such user is already exist',
     USER_NOT_FOUND = 'Such user does not exist',
+    PRODUCT_NOT_FOUND = 'Such product does not exist',
     UNABLE_TO_CREATE_USER = 'Unable to create user. Please try again',
     LIMIT_OVER = 'Product creation limit is over',
     LOGIN_SUCCESS = 'Logged in successfully',

@@ -5,14 +5,13 @@ import CommentLine from "../field/CommentLine";
 
 
 function CommentsModal(props) {
-    const {pid, comments, closeComments, refreshInfo} = props;
+    const {pid, comments, closeComments} = props;
     const [content, setContent] = useState('');
     
     const sendComment = () => {
         postComment({
             pid: pid,
-            data: {'content': content},
-            handler: () => refreshInfo()
+            data: {'content': content}
         });
     }
 
