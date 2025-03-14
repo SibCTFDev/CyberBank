@@ -13,7 +13,7 @@ function CommentsModal(props) {
             pid: pid,
             data: {'content': content}
         });
-    }
+    };
 
     var commentContent = comments.length > 0 ? 
         (
@@ -42,6 +42,7 @@ function CommentsModal(props) {
             </Grid>
             
         );
+        
     return(
         <Grid
             container

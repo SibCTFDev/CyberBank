@@ -7,7 +7,6 @@ function ProductModal(props) {
     const {product, userName, closeModal} = props;
     const [commentsOpen, setCommentsOpen] = useState(false);
         
-
     const openComments = () => setCommentsOpen(true);
     const closeComments = () => setCommentsOpen(false);
 

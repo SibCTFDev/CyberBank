@@ -25,7 +25,7 @@ class CustomWebSocket {
 
         this.socket.addEventListener('ping', () => {
             this.socket.pong();
-        })
+        });
     }
   
     sendMessage(pid = null) {

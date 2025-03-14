@@ -38,43 +38,41 @@ function App() {
   const REGISTER = "/register/";
 
   useEffect(() => {
-    if (!authorized) return;
+    if (!authorized || socketRef.current) return;
 
-    if (!socketRef.current) {
-      socketRef.current = new CustomWebSocket({
-        uid: userData.id,
-        onOpenHandler: () => {
-          if (!userData.id)
-            getUser({handler: (data) => {
-              setUserData(data);
-              socketRef.current.id = data.id;
-              socketRef.current.sendMessage()
-            }});
-          else socketRef.current.sendMessage();
-        },
-        onMessageHandler: (data) => {
-          switch(data.type) {
-            case 'update':
-              socketRef.current.sendMessage(data.pid);
-              break;
-            case 'user':
-              setUserData(data.message);
-              break;
-            case 'products':
-              setProducts(data.message);
-              break;
-            case 'product':
-              setProducts(products => products.map(product =>
-                product.id === data.message.id ? data.message : product
-              ));
-              break;
-            default:
-              console.log(data.message);
-              break;
-          };
-        }
-      })
-    }
+    socketRef.current = new CustomWebSocket({
+      uid: userData.id,
+      onOpenHandler: () => {
+        if (!userData.id)
+          getUser({handler: (data) => {
+            setUserData(data);
+            socketRef.current.id = data.id;
+            socketRef.current.sendMessage()
+          }});
+        else socketRef.current.sendMessage();
+      },
+      onMessageHandler: (data) => {
+        switch(data.type) {
+          case 'update':
+            socketRef.current.sendMessage(data.pid);
+            break;
+          case 'user':
+            setUserData(data.message);
+            break;
+          case 'products':
+            setProducts(data.message);
+            break;
+          case 'product':
+            setProducts(products => products.map(product =>
+              product.id === data.message.id ? data.message : product
+            ));
+            break;
+          default:
+            console.log(data.message);
+            break;
+        };
+      }
+    });
   }, [userData, authorized]);
 
 

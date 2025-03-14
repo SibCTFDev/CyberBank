@@ -85,7 +85,7 @@ export function deleteField<T extends object, K extends keyof T>(dict: T, field:
 export async function prepareProductsToResponse(products: Product[], 
     user: User) : Promise<object[] | null> {
     for (var i = 0; i < products.length; i++) {
-        const product = await prepareProductToResponse(products[i], user)
+        const product = await prepareProductToResponse(products[i], user);
         if (product) products[i] = product;
     }
     return products;

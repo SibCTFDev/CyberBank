@@ -25,13 +25,13 @@ class WebSocketController {
                 if (!userId) {
                     ws.send(socketErrorMessage(Const.BAD_REQUEST));
                     return;
-                }
+                };
 
                 const user = await getUserById(userId);
                 if (!user) {
                     ws.send(socketErrorMessage(Const.USER_NOT_FOUND));
                     return;
-                }
+                };
 
                 ws.send(JSON.stringify({
                     type: 'user',
@@ -44,12 +44,13 @@ class WebSocketController {
                     if (!product) {
                         ws.send(socketErrorMessage(Const.PRODUCT_NOT_FOUND));
                         return;
-                    }
+                    };
+
                     const processedProduct = await prepareProductToResponse(product, user);
                     if (!processedProduct) {
                         ws.send(socketErrorMessage(Const.DB_REQUEST_ERROR));
                         return;
-                    }
+                    };
     
                     ws.send(JSON.stringify({
                         type: 'product',
@@ -61,12 +62,13 @@ class WebSocketController {
                     if (!products) {
                         ws.send(socketErrorMessage(Const.DB_REQUEST_ERROR));
                         return;
-                    }
+                    };
+
                     const processedProducts = await prepareProductsToResponse(products, user);
                     if (!processedProducts) {
                         ws.send(socketErrorMessage(Const.DB_REQUEST_ERROR));
                         return;
-                    }
+                    };
     
                     ws.send(JSON.stringify({
                         type: 'products',
