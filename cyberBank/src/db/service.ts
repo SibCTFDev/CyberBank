@@ -102,13 +102,24 @@ export async function getUserByName(name: string) : Promise<User | null> {
     return await userRepo.findOneBy({name: name});
 }
 
+export async function getUserById(id: number) : Promise<User | null> {
+    return await userRepo.findOneBy({id: id});
+}
+
 export async function getProducts() : Promise<Product[] | null> {
     const products = await productRepo.find();
-    if (!products) return null
+    if (!products) return null;
     
     return products ?? [];
 }
 
 export async function getProductById(pid: number) : Promise<Product | null> {
     return await productRepo.findOneBy({id: pid});
+}
+
+export async function getProductComments(product: Product) : Promise<Comment[] | null> {
+    const comments = await commentRepo.findBy({product: product});
+    if (!comments) return null
+
+    return comments ?? [];
 }

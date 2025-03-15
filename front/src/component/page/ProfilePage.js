@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Grid2 as Grid, Drawer} from '@mui/material';
 
 import ProductCard from "../field/ProductCard";
@@ -13,6 +13,16 @@ function ProfilePage(props) {
     const toggleModal = (state) => () => {
         setModalOpened(state);
     };
+
+    useEffect(() => {
+        setSelectedProduct(
+        oldProduct => {
+            if (oldProduct)
+                return products.filter(
+                    product => product.id === oldProduct.id
+                )[0]}
+        );
+    }, [products]);
 
     const productsContent = products.filter(
         product => product.seller === userData.name).length === 0 ? (

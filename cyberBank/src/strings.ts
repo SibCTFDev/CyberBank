@@ -5,6 +5,8 @@ enum Const {
     DB_REQUEST_ERROR = 'Unable to request data',
     BAD_SESSION = 'Undefined session',
     USER_EXISTS = 'Such user is already exist',
+    USER_NOT_FOUND = 'Such user does not exist',
+    PRODUCT_NOT_FOUND = 'Such product does not exist',
     UNABLE_TO_CREATE_USER = 'Unable to create user. Please try again',
     LIMIT_OVER = 'Product creation limit is over',
     LOGIN_SUCCESS = 'Logged in successfully',
@@ -13,8 +15,12 @@ enum Const {
     NOT_ENOUGH_MONEY = 'Not enough money',
     SELFBUY_ERROR = 'You cannot buy your product',
     BUY_SUCCESS = 'Product bought successfully',
+    COMMENT_SUCCESS= 'Comment successfully sent',
     DATA_SOURCE_INITIALIZED = 'Data Source has been initialized',
     DATA_SOURCE_NOT_INITIALIZED = 'Error during Data Source initialization',
+    SOCKET_SERVER_RUNNING = 'Socket server is running',
+    SOCKET_CONNECT = 'Client connected',
+    SOCKET_DISCONNECT = 'Client disconnected',
 }
 
 export default Const;
