@@ -16,6 +16,8 @@ enum Const {
     COMMENT_SUCCESS= 'Comment successfully sent',
     DATA_SOURCE_INITIALIZED = 'Data Source has been initialized',
     DATA_SOURCE_NOT_INITIALIZED = 'Error during Data Source initialization',
+    IMAGE_CREATE_ERROR = 'Error during image creation',
+    JIMP_ERROR = 'Error during Jimp object initialization',
 }
 
 export default Const;
