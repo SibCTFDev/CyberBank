@@ -48,11 +48,10 @@ export async function createProduct(
     product.price = price;
     product.created = Date();
     product.owner = user;
-    product.content = encrypt(content, user.password);
+    product.content = encrypt(content);
 
     const image = new Image();
     product.image_path = await image.generate(content, user.id);
-    product.content = encrypt(content);
     
     try {
         await productRepo.save(product);
