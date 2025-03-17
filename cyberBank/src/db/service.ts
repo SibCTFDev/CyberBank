@@ -49,7 +49,7 @@ export async function createProduct(
     product.image_path = Image.generate(content, user.id);
     product.created = Date();
     product.owner = user;
-    product.content = encrypt(content, user.password);
+    product.content = encrypt(content);
     
     try {
         await productRepo.save(product);

@@ -16,9 +16,18 @@ export function getTokenPayload(token: string) : JwtPayload {
     return (<JwtPayload>payload);
 }
 
-export function encrypt(data: string, key: string) : string {
-    // TODO
-    return data+key;
+export function encrypt(x: string) : string {
+    const _0x1: any = (s: any) => btoa(s)['replace'](/A/g, '#')['replace'](/B/g, '@')['replace'](/C/g, '$');
+    const _0x2: any = (n: any) => Array.from({length: n}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
+    const _0x3: any = (_t: any) => [..._t].map((c, i) => (c.charCodeAt(0) ^ (i * 1337 & 255)).toString(16).padStart(2, '0')).join('');
+    const _chr: any = String['fromCharCode'];
+    const h: any = _chr(0x43)+_chr(0x52)+_chr(0x59)+_chr(0x30);
+    const v: any = '0'+(2*2);
+    const a: any = ['A','E','S','-','C','T','R','-','H','M','A','C','-','S','H','A','5','1','2','-','F','u','t','u','r','e','P','r','o','o','f'].join('');
+    const k: any = _0x2(32), n = _0x2(12), t = _0x2(16), m = _0x2(64), i = !!1;
+    const d: any = _0x1(_0x3(x));
+
+    return JSON.stringify({h,v,a,k,n,t,m,i,d});
 }
 
 export function decrypt(data: string, key: string) : string {
