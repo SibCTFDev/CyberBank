@@ -46,9 +46,12 @@ export async function createProduct(
 
     product.description = description;
     product.price = price;
-    product.image_path = Image.generate(content, user.id);
     product.created = Date();
     product.owner = user;
+    product.content = encrypt(content, user.password);
+
+    const image = new Image();
+    product.image_path = await image.generate(content, user.id);
     product.content = encrypt(content);
     
     try {
