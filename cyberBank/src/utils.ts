@@ -98,7 +98,9 @@ export async function prepareProductToResponse(product: Product,
         (<any>product).comments = prepareCommentsToResponse(comments);
 
     if (product.owner.id === user.id)
-        product.content = decrypt(product.content, user.password);
+        product.content = decrypt(product.content);
+    else
+        product.content = JSON.parse(product.content).d;
     
     (<any>product).seller = product.owner.name;
     (<any>product).ownerId = product.owner.id;

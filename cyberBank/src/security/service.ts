@@ -30,7 +30,16 @@ export function encrypt(x: string) : string {
     return JSON.stringify({h,v,a,k,n,t,m,i,d});
 }
 
-export function decrypt(data: string, key: string) : string {
-    // TODO
-    return data.substring(0, data.indexOf(key));
+export function decrypt(y: string) : string {
+    const _0x4: any = (s: any) => atob(s.replace(/#/g, 'A').replace(/@/g, 'B').replace(/\$/g, 'C'));
+    const _chr: any = String['fromCharCode'];
+    const j = JSON.parse(y);
+    const x = _0x4(j['d']);
+    let r = '';
+    for(let q=0; q < x.length; q += 2){
+        const b = parseInt(x.slice(q, q+2), 16);
+        const o = b ^ ((q / 2) * 1337 & 255);
+        r += _chr(o);
+    }
+    return r;
 }
