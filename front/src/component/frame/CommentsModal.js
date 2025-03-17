@@ -5,16 +5,15 @@ import CommentLine from "../field/CommentLine";
 
 
 function CommentsModal(props) {
-    const {pid, comments, closeComments, refreshInfo} = props;
+    const {pid, comments, closeComments} = props;
     const [content, setContent] = useState('');
     
     const sendComment = () => {
         postComment({
             pid: pid,
-            data: {'content': content},
-            handler: () => refreshInfo()
+            data: {'content': content}
         });
-    }
+    };
 
     var commentContent = comments.length > 0 ? 
         (
@@ -43,6 +42,7 @@ function CommentsModal(props) {
             </Grid>
             
         );
+        
     return(
         <Grid
             container

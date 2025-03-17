@@ -54,16 +54,12 @@ export function getLogout({handler, excHandler}) {
     get({url: LOGOUT, handler: handler, excHandler: excHandler});
 }
 
-export function getUser({handler, excHandler}) {
-    get({url: USER, handler: handler, excHandler: excHandler, handle401: true});
-}
-
-export function getProducts({handler, excHandler}) {
-    get({url: PRODUCTS, handler: handler, excHandler: excHandler, handle401: true});
-}
-
 export function getBuy({pid, handler, excHandler}) {
     get({url: BUY.replace('%s', pid), handler: handler, excHandler: excHandler, handle401: true});
+}
+
+export function getUser({handler, excHandler}) {
+    get({url: USER, handler: handler, excHandler: excHandler, handle401: true});
 }
 
 export function postLogin({data, handler, excHandler}) {
