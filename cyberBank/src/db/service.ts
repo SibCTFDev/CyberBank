@@ -62,7 +62,8 @@ export async function createProduct(
 }
 
 export async function updateProduct(product: Product, param: {
-    description?: string, owner?: User, price?: number, image_path?: string
+    description?: string, owner?: User, price?: number,
+    image_path?: string, reason?: string
     }) : Promise<Product | null> {
     if (param.description) product.description = param.description;
     if (param.owner) product.owner = param.owner;

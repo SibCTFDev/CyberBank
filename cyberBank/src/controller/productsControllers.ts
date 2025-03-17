@@ -1,12 +1,15 @@
 import 'reflect-metadata';
-import { Controller, JsonController, Get, Post, 
+import {
+    Controller, JsonController,
+    Get, Post, Put,
     Param, Body, Authorized, Req, Res 
 } from 'routing-controllers';
 import { Request, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
 import { CommentObject } from '../interface/commentObject';
-import { getUserByName, getProducts, createProduct, 
+import { BuyObject } from "../interface/buyObject";
+import { getUserByName, getProducts, createProduct,
     getProductById, updateUser, updateProduct, 
     createComment
 } from '../db/service';
@@ -40,21 +43,31 @@ export class ProductsController {
     }
 
     @Authorized()
-    @Get('/:pid/buy')
-    async buyProduct(@Param('pid') pid: number, @Req() request: Request,
-        @Res() response: Response) {
+    @Put('/:pid/buy')
+    async buyProduct(
+        @Body({ required: true }) buyInfo: BuyObject,
+        @Req() request: Request,
+        @Res() response: Response
+    ) {
         const tokenPayload = getTokenPayload(request.cookies.jwt);
         const user = await getUserByName(tokenPayload.username);
         
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
 
-        const product = await getProductById(pid);
+        const product = await getProductById(buyInfo.product_id);
         
         if (!product) return httpResponse400(response, Const.BAD_REQUEST);
         if (product.owner.id === user.id) return httpResponse400(response, Const.SELFBUY_ERROR);
         if (user.balance < product.price) return httpResponse400(response, Const.NOT_ENOUGH_MONEY);
-        
+
+        let reasonToBuy = buyInfo.reason;
         updateUser(product.owner, {balance: product.owner.balance + product.price});
+
+        let isReasonExist = /^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason);
+        if (isReasonExist) {
+            createComment(reasonToBuy, user, product);
+        }
+
         updateUser(user, {balance: user.balance - product.price});
         updateProduct(product, {owner: user});
 
