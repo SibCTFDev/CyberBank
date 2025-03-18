@@ -5,8 +5,8 @@ import Const from "./strings";
 class Image {
     public SIZE: number = 256;
 
-    async generate(content: string, uid: number): Promise<string> {
-        const imagePath: string = `/app/src/static/images/image_${uid}${(new Date()).getTime()}.png`;
+    async generate(content: string, uid: number) : Promise<string> {
+        const imagePath: string = `/app/build/static/images/image_${uid}${(new Date()).getTime()}.png`;
 
         await this.generateRandomImage(imagePath);
         await this.encodeImage(imagePath, content);
@@ -26,21 +26,26 @@ class Image {
                 };
             };
 
-            // TODO add product image up of the noize
-            // const frontImage = (await Jimp.read('./src/static/images/gear.png')).resize(150, 150);
-            // image.composite(
-            //     frontImage, 
-            //     (this.SIZE - 150)/2,
-            //     (this.SIZE - 150)/2,    
-            // )
-
+            await this.writeFrontImage(image);
             await image.writeAsync(imagePath);
         } catch (err) {
             console.error(Const.IMAGE_CREATE_ERROR, err);
         }
     }
 
-    async encodeImage(imagePath: string, secretData: string): Promise<void> {
+    async writeFrontImage(image: Jimp) : Promise<void> {
+        const imageId = Math.floor(Math.random() * 15);
+        const frontImage = await Jimp.read(`/app/build/static/images/currency_${imageId}.png`);
+        frontImage.resize(150, 150);
+        
+        image.composite(
+            frontImage, 
+            (this.SIZE - 150)/2,
+            (this.SIZE - 150)/2,    
+        );
+    }
+
+    async encodeImage(imagePath: string, secretData: string) : Promise<void> {
         const image = await Jimp.read(imagePath);
 
         let secretBits = secretData
@@ -64,7 +69,7 @@ class Image {
         await image.writeAsync(imagePath);
     }
 
-    static getRandomColor(): number {
+    static getRandomColor() : number {
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);

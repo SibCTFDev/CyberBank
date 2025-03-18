@@ -34,8 +34,13 @@ function ProductCard(props) {
                 spacing="12px"
                 alignItems="center"
             >
-                <Grid item>
-                    <img src={`${HOST}/public/images/${product.image_path}`} alt={product.imageId} width={150} />
+                <Grid item sx={{height: "152px"}}>
+                    <img 
+                        src={`${HOST}/public/images/${product.image_path}`} 
+                        alt={product.imageId} 
+                        width={150}
+                        style={{borderRadius: "0.375rem"}}
+                    />
                 </Grid>
                 <Grid item className="ProductDescription" sx={{color: "color.text"}}>
                     {product.description}
