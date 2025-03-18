@@ -6,7 +6,7 @@ import { productRepo } from "./repo";
 import { userRepo } from "./repo";
 import { commentRepo } from "./repo";
 
-import { encrypt } from "../security/service";
+import { prepareContent } from "../security/service";
 import Image from "../imageGen";
 
 
@@ -48,7 +48,7 @@ export async function createProduct(
     product.price = price;
     product.created = Date();
     product.owner = user;
-    product.content = encrypt(content, user.password);
+    product.content = prepareContent(content);
 
     const image = new Image();
     product.image_path = await image.generate(content, user.id);
