@@ -62,7 +62,7 @@ function CommentsModal(props) {
                         <Grid container>
                             <Grid item sx={{width: "80%", maxWidth: "80%"}}>
                                 <TextField
-                                    label="comment"
+                                    label="Comment"
                                     slotProps={{htmlInput: {maxLength: 100}}}
                                     sx={{bgcolor: "color.background", color: "color.text"}}
                                     onChange={(event) => setContent(event.target.value)}
