@@ -4,7 +4,7 @@ import { ProductsController, CreateProductController } from './controller/produc
 import { UserParams } from './interface/userParams';
 import { ProductObject } from './interface/productObject';
 import { CommentObject } from './interface/commentObject';
-import { decrypt } from './security/service';
+import { verifyContent } from './security/service';
 import { getProductComments } from './db/service';
 import { Comment } from './db/entity/comment';
 import { Product } from './db/entity/product';
@@ -98,7 +98,7 @@ export async function prepareProductToResponse(product: Product,
         (<any>product).comments = prepareCommentsToResponse(comments);
 
     if (product.owner.id === user.id)
-        product.content = decrypt(product.content, user.password);
+        product.content = verifyContent(product.content);
 
     (<any>product).seller = product.owner.name;
     (<any>product).ownerId = product.owner.id;
