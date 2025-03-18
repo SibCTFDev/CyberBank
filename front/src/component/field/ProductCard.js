@@ -1,10 +1,9 @@
-import { Grid2 as Grid } from "@mui/material";
+import {Grid2 as Grid} from "@mui/material";
+import {HOST} from "../../requests";
 
 
 function ProductCard(props) {
-    const { product, selectProduct, openModal, ownProduct } = props;
-
-    const HOST = process.env.REACT_APP_API_HOST || "/api";
+    const {product, selectProduct, openModal, ownProduct} = props;
 
     const selectProductHandler = () => {
         selectProduct(product);
@@ -38,21 +37,20 @@ function ProductCard(props) {
                 <Grid item>
                     <img src={`${HOST}/public/images/${product.image_path}`} alt={product.imageId} width={150} />
                 </Grid>
-                <Grid item className="ProductDescription" sx={{ color: "color.text" }}>
+                <Grid item className="ProductDescription" sx={{color: "color.text"}}>
                     {product.description}
                 </Grid>
                 {ownProduct ? (
-                    <Grid item sx={{ color: "color.accent" }}>
+                    <Grid item sx={{color: "color.accent"}}>
                         <u>Your own</u>
                     </Grid>
                 ) : (
-                    <Grid item sx={{ color: "color.text" }}>
+                    <Grid item sx={{color: "color.text"}}>
                         {`${product.price}$`}
                     </Grid>
                 )}
             </Grid>
         </Grid>
-
     );
 }
 

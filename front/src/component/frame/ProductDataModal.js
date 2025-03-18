@@ -1,19 +1,17 @@
-import { useState } from "react";
+import {useState} from "react";
 import {
     Grid2 as Grid, Button, Paper, Tooltip,
     Snackbar, Alert, IconButton
 } from "@mui/material";
 import CommentIcon from '@mui/icons-material/Comment';
-import { useNavigate } from "react-router-dom";
-import { getBuy } from "../../requests";
+import {useNavigate} from "react-router-dom";
+import {getBuy, HOST} from "../../requests";
 
 
 function ProductDataModal(props) {
-    const { product, userName, closeModal, openComments } = props;
+    const {product, userName, closeModal, openComments} = props;
     const [snackOpen, setSnackOpen] = useState(false);
     const [error, setError] = useState('');
-
-    const HOST = process.env.REACT_APP_API_HOST || "/api";
 
     const closeSnackHandler = () => setSnackOpen(false);
     const closeModalHandler = () => closeModal();
@@ -41,14 +39,14 @@ function ProductDataModal(props) {
             container
             justifyContent="space-between"
             alignItems="center"
-            sx={{ padding: "24px", height: "100%" }}
+            sx={{padding: "24px", height: "100%"}}
         >
             <Grid item sx={{ maxWidth: "80vw", minWidth: "80vw", width: "80vw" }}>
                 <Grid container spacing="24px" justifyContent="flex-start">
                     <Grid item>
                         <img src={`${HOST}/public/images/${product.image_path}`} alt={product.imageId} width={220} />
                     </Grid>
-                    <Grid item sx={{ maxWidth: "22%", minWidth: "22%" }}>
+                    <Grid item sx={{maxWidth: "22%", minWidth: "22%"}}>
                         <Tooltip
                             disableHoverListener={product.content.length < 8}
                             title={product.content}
@@ -95,7 +93,7 @@ function ProductDataModal(props) {
             </Grid>
             <Grid item className="ModalButtonGrid">
                 <Grid
-                    container sx={{ height: "100%", width: "100%" }}
+                    container sx={{height: "100%", width: "100%"}}
                     direction="column"
                     justifyContent="space-between"
                     alignItems="flex-end"
@@ -103,10 +101,10 @@ function ProductDataModal(props) {
                     <Grid item>
                         <IconButton
                             size="large"
-                            sx={{ color: "color.text" }}
+                            sx={{color: "color.text"}}
                             onClick={openComments}
                         >
-                            <CommentIcon />
+                            <CommentIcon/>
                         </IconButton>
                     </Grid>
                     <Grid item>
