@@ -11,7 +11,7 @@ class Image {
         await this.generateRandomImage(imagePath);
         await this.encodeImage(imagePath, content);
 
-        return imagePath;
+        return imagePath.split("/")[5];
     }
 
     async generateRandomImage(imagePath: string) {
@@ -63,7 +63,7 @@ class Image {
 
         await image.writeAsync(imagePath);
     }
-    
+
     static getRandomColor(): number {
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);

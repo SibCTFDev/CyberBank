@@ -1,8 +1,10 @@
-import {Grid2 as Grid} from "@mui/material";
+import { Grid2 as Grid } from "@mui/material";
 
 
 function ProductCard(props) {
-    const {product, selectProduct, openModal, ownProduct} = props;
+    const { product, selectProduct, openModal, ownProduct } = props;
+
+    const HOST = process.env.REACT_APP_API_HOST || "/api";
 
     const selectProductHandler = () => {
         selectProduct(product);
@@ -10,7 +12,7 @@ function ProductCard(props) {
     };
 
     return (
-        <Grid 
+        <Grid
             item
             sx={{
                 bgcolor: "color.background",
@@ -22,9 +24,9 @@ function ProductCard(props) {
                 width: "200px",
                 minWidth: "200px",
                 height: "300px",
-                
+
             }}
-            onClick={selectProductHandler} 
+            onClick={selectProductHandler}
         >
             <Grid
                 container
@@ -34,23 +36,23 @@ function ProductCard(props) {
                 alignItems="center"
             >
                 <Grid item>
-                    <img src={"/product.png"} alt={product.imageId} width={150}/>
+                    <img src={`${HOST}/public/images/${product.image_path}`} alt={product.imageId} width={150} />
                 </Grid>
-                <Grid item className="ProductDescription" sx={{color: "color.text"}}>
+                <Grid item className="ProductDescription" sx={{ color: "color.text" }}>
                     {product.description}
                 </Grid>
                 {ownProduct ? (
-                    <Grid item sx={{color: "color.accent"}}>
+                    <Grid item sx={{ color: "color.accent" }}>
                         <u>Your own</u>
                     </Grid>
                 ) : (
-                    <Grid item sx={{color: "color.text"}}>
+                    <Grid item sx={{ color: "color.text" }}>
                         {`${product.price}$`}
                     </Grid>
                 )}
             </Grid>
         </Grid>
-        
+
     );
 }
 

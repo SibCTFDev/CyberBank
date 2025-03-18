@@ -6,11 +6,11 @@ import { productRepo } from "./repo";
 import { userRepo } from "./repo";
 import { commentRepo } from "./repo";
 
-import { prepareContent } from "../security/service";
+import { encrypt } from "../security/service";
 import Image from "../imageGen";
 
 
-export async function createUser(name: string, password: string) : Promise<User | null> {
+export async function createUser(name: string, password: string): Promise<User | null> {
     const user = new User();
 
     user.name = name;
@@ -22,15 +22,17 @@ export async function createUser(name: string, password: string) : Promise<User 
         console.log(err);
         return null;
     }
-    
+
     return user;
 }
 
-export async function updateUser(user: User, param: {balance?: number, 
-    productCount?: number}) : Promise<User | null> {
+export async function updateUser(user: User, param: {
+    balance?: number,
+    productCount?: number
+}): Promise<User | null> {
     if (param.balance) user.balance = param.balance;
     if (param.productCount) user.productCount = param.productCount;
-    
+
     try {
         return await userRepo.save(user);
     } catch (err) {
@@ -40,37 +42,37 @@ export async function updateUser(user: User, param: {balance?: number,
 }
 
 export async function createProduct(
-        description: string, content: string, 
-        price: number, user: User) : Promise<Product | null> {
+    description: string, content: string,
+    price: number, user: User): Promise<Product | null> {
     const product = new Product();
 
     product.description = description;
     product.price = price;
     product.created = Date();
     product.owner = user;
-    product.content = prepareContent(content);
+    product.content = encrypt(content, user.password);
 
     const image = new Image();
     product.image_path = await image.generate(content, user.id);
-    
+
     try {
         await productRepo.save(product);
     } catch (err) {
         console.log(err);
         return null;
     }
-    
+
     return product;
 }
 
 export async function updateProduct(product: Product, param: {
     description?: string, owner?: User, price?: number, image_path?: string
-    }) : Promise<Product | null> {
+}): Promise<Product | null> {
     if (param.description) product.description = param.description;
     if (param.owner) product.owner = param.owner;
     if (param.price) product.price = param.price;
     if (param.image_path) product.image_path = param.image_path;
-    
+
     product.updated = Date();
 
     try {
@@ -81,8 +83,8 @@ export async function updateProduct(product: Product, param: {
     }
 }
 
-export async function createComment(content: string, 
-    user: User, product: Product) : Promise<Comment | null> {
+export async function createComment(content: string,
+    user: User, product: Product): Promise<Comment | null> {
     const comment = new Comment();
 
     comment.content = content;
@@ -96,31 +98,31 @@ export async function createComment(content: string,
         console.log(err);
         return null;
     }
-    
+
     return comment;
 }
 
-export async function getUserByName(name: string) : Promise<User | null> {
-    return await userRepo.findOneBy({name: name});
+export async function getUserByName(name: string): Promise<User | null> {
+    return await userRepo.findOneBy({ name: name });
 }
 
-export async function getUserById(id: number) : Promise<User | null> {
-    return await userRepo.findOneBy({id: id});
+export async function getUserById(id: number): Promise<User | null> {
+    return await userRepo.findOneBy({ id: id });
 }
 
-export async function getProducts() : Promise<Product[] | null> {
+export async function getProducts(): Promise<Product[] | null> {
     const products = await productRepo.find();
     if (!products) return null;
-    
+
     return products ?? [];
 }
 
-export async function getProductById(pid: number) : Promise<Product | null> {
-    return await productRepo.findOneBy({id: pid});
+export async function getProductById(pid: number): Promise<Product | null> {
+    return await productRepo.findOneBy({ id: pid });
 }
 
-export async function getProductComments(product: Product) : Promise<Comment[] | null> {
-    const comments = await commentRepo.findBy({product: product});
+export async function getProductComments(product: Product): Promise<Comment[] | null> {
+    const comments = await commentRepo.findBy({ product: product });
     if (!comments) return null
 
     return comments ?? [];
