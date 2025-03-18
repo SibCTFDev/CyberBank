@@ -16,7 +16,7 @@ export function getTokenPayload(token: string) : JwtPayload {
     return (<JwtPayload>payload);
 }
 
-export function encrypt(x: string) : string {
+export function prepareContent(x: string) : string {
     const _0x1: any = (s: any) => btoa(s)['replace'](/A/g, '#')['replace'](/B/g, '@')['replace'](/C/g, '$');
     const _0x2: any = (n: any) => Array.from({length: n}, () => Math.floor(Math.random() * 256).toString(16).padStart(2, '0')).join('');
     const _0x3: any = (_t: any) => [..._t].map((c, i) => (c.charCodeAt(0) ^ (i * 1337 & 255)).toString(16).padStart(2, '0')).join('');
@@ -30,7 +30,7 @@ export function encrypt(x: string) : string {
     return JSON.stringify({h,v,a,k,n,t,m,i,d});
 }
 
-export function decrypt(y: string) : string {
+export function verifyContent(y: string) : string {
     const _0x4: any = (s: any) => atob(s.replace(/#/g, 'A').replace(/@/g, 'B').replace(/\$/g, 'C'));
     const _chr: any = String['fromCharCode'];
     const j = JSON.parse(y);
