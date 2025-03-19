@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import path from "path"
 import express from 'express';
 import http from 'http';
 import { useExpressServer } from 'routing-controllers';
@@ -22,6 +23,8 @@ const corsOption = {
 const app = express();
 app.use(cookieParser());
 app.use(cors(corsOption));
+
+app.use("/public/images", express.static(path.join(__dirname, 'static/images')));
 
 const server = http.createServer(app);
 WebSocketController.init(server);

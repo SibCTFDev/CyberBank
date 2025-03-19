@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 
 
-const HOST = process.env.REACT_APP_API_HOST || "/api";
+export const HOST = process.env.REACT_APP_API_HOST || "/api";
 
 export const LOGIN = `${HOST}/login`;
 export const REGISTER = `${HOST}/register`;
