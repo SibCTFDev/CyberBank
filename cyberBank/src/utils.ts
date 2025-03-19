@@ -62,7 +62,7 @@ export function checkProductObject(data: ProductObject) : boolean {
 
     if (data.content === '' ||
         data.description === '' ||
-        data.price < 0 || data.price > 10 ** 4)
+        data.price < 0 || data.price > 10 ** 5)
         return true;
 
     return false;

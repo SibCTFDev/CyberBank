@@ -76,7 +76,7 @@ function ProfilePage(props) {
                     {`Balance: ${userData.balance}$`}
                 </Grid>
                 <Grid item>
-                    {`Creation available: ${3-userData.productCount}`}
+                    {`Creation available: ${5-userData.productCount}`}
                 </Grid>
             </Grid>
         </Grid>

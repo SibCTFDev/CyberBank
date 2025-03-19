@@ -12,7 +12,7 @@ export class User {
     @Column({length: 128})
     password!: string
 
-    @Column({default: 3})
+    @Column({default: 300})
     balance!: number
 
     @Column({default: 0})
