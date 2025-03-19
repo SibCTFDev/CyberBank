@@ -54,10 +54,10 @@ export class ProductsController {
         if (product.owner.id === user.id) return httpResponse400(response, Const.SELFBUY_ERROR);
         if (user.balance < product.price) return httpResponse400(response, Const.NOT_ENOUGH_MONEY);
         
-        updateUser(product.owner, {balance: product.owner.balance + product.price});
-        updateUser(user, {balance: user.balance - product.price});
-        updateProduct(product, {owner: user});
-
+        await updateUser(product.owner, {balance: product.owner.balance + product.price});
+        await updateUser(user, {balance: user.balance - product.price});
+        await updateProduct(product, {owner: user});
+        
         WebSocketController.update(product.id);
         
         return Const.BUY_SUCCESS;
@@ -81,7 +81,7 @@ export class CreateProductController {
         const product = await createProduct(data.description, data.content, data.price, user);
         if (!product) return httpResponse400(response);
 
-        updateUser(user, {productCount: user.productCount+1});
+        await updateUser(user, {productCount: user.productCount+1});
         (<any>product).ownerId = user.id;
         
         WebSocketController.update();

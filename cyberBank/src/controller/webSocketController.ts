@@ -91,7 +91,7 @@ class WebSocketController {
 
     static update(pid?: number) : void {
         if (!WebSocketController.wss) return;
-        
+
         WebSocketController.wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN)
                 client.send(JSON.stringify({
