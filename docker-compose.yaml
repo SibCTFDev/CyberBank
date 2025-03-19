@@ -37,6 +37,7 @@ services:
         condition: service_healthy
     volumes:
       - ./cyberBank:/app
+      - /app/node_modules
   
   cyber-bank-front:
     build: ./front
