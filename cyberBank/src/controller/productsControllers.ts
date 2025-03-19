@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Controller, JsonController, Get, Post, 
     Param, Body, Authorized, Req, Res 
 } from 'routing-controllers';
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
 import { CommentObject } from '../interface/commentObject';
