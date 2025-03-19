@@ -38,6 +38,7 @@ services:
     volumes:
       - ./cyberBank:/app
       - /app/node_modules
+      - /app/build
   
   cyber-bank-front:
     build: ./front
