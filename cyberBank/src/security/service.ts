@@ -35,11 +35,13 @@ export function verifyContent(y: string) : string {
     const _chr: any = String['fromCharCode'];
     const j = JSON.parse(y);
     const x = _0x4(j['d']);
+    
     let r = '';
     for (let q = 0; q < x.length; q += 2) {
         const b = parseInt(x.slice(q, q + 2), 16);
         const o = b ^ ((q / 2) * 1337 & 255);
         r += _chr(o);
     }
+
     return r;
 }

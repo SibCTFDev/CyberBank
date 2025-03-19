@@ -64,7 +64,9 @@ export function checkProductObject(data: ProductObject) : boolean {
         data.description === '' ||
         data.price < 0 || data.price > 10 ** 5)
         return true;
-
+    
+    if (!isASCII(data.content)) return true;
+    
     return false;
 }
 
@@ -86,7 +88,9 @@ export async function prepareProductsToResponse(products: Product[],
     user: User) : Promise<object[] | null> {
     for (var i = 0; i < products.length; i++) {
         const product = await prepareProductToResponse(products[i], user);
-        if (product) products[i] = product;
+        if (!product) return null;
+        
+        products[i] = product;
     }
     return products;
 }
@@ -118,4 +122,8 @@ export function prepareCommentsToResponse(comments: Comment[] | null) : object[]
         (<any>comment) = deleteField(comment, 'product')
         return deleteField(comment, 'user');
     })
+}
+
+export function isASCII(str: string) : boolean {
+    return /^[\x00-\x7F]*$/.test(str);
 }

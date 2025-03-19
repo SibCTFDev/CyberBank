@@ -4,6 +4,7 @@ import Const from "./strings";
 
 class Image {
     public SIZE: number = 256;
+    public FRONT_IMAGE_SIZE: number = 150;
 
     async generate(content: string, uid: number) : Promise<string> {
         const imagePath: string = `/app/build/static/images/image_${uid}${(new Date()).getTime()}.png`;
@@ -36,19 +37,19 @@ class Image {
     async writeFrontImage(image: Jimp) : Promise<void> {
         const imageId = Math.floor(Math.random() * 15);
         const frontImage = await Jimp.read(`/app/build/static/images/currency_${imageId}.png`);
-        frontImage.resize(150, 150);
+        frontImage.resize(this.FRONT_IMAGE_SIZE, this.FRONT_IMAGE_SIZE);
         
         image.composite(
             frontImage, 
-            (this.SIZE - 150)/2,
-            (this.SIZE - 150)/2,    
+            (this.SIZE - this.FRONT_IMAGE_SIZE) / 2,
+            (this.SIZE - this.FRONT_IMAGE_SIZE) / 2,    
         );
     }
 
-    async encodeImage(imagePath: string, secretData: string) : Promise<void> {
+    async encodeImage(imagePath: string, data: string) : Promise<void> {
         const image = await Jimp.read(imagePath);
 
-        let secretBits = secretData
+        let bits = data
             .split('')
             .map(c => c.charCodeAt(0).toString(2).padStart(8, '0'))
             .join('') + '00000000';
@@ -57,9 +58,9 @@ class Image {
 
         image.scan(0, 0, image.bitmap.width, image.bitmap.height, (_x, _y, idx) => {
             for (let c = 0; c < 3; c++) {
-                if (index < secretBits.length) {
+                if (index < bits.length) {
                     let value = image.bitmap.data[idx + c];
-                    value = (value & 0b11111110) | parseInt(secretBits[index]);
+                    value = (value & 0b11111110) | parseInt(bits[index]);
                     image.bitmap.data[idx + c] = value;
                     index++;
                 };

@@ -44,7 +44,10 @@ function ProductDataModal(props) {
             <Grid item sx={{ maxWidth: "80vw", minWidth: "80vw", width: "80vw" }}>
                 <Grid container spacing="24px" justifyContent="flex-start">
                     <Grid item>
-                        <img src={`${HOST}/public/images/${product.image_path}`} alt={product.imageId} width={220} />
+                        <img 
+                            src={`${HOST}/public/images/${product.image_path}`} 
+                            alt={product.imageId} width={220} 
+                        />
                     </Grid>
                     <Grid item sx={{maxWidth: "22%", minWidth: "22%"}}>
                         <Tooltip

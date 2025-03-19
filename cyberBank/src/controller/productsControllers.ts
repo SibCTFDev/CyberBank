@@ -34,7 +34,7 @@ export class ProductsController {
         if (!user) return httpResponse401(response, Const.BAD_SESSION);
 
         const processedProducts = await prepareProductsToResponse(products, user);
-        if (!processedProducts) return httpResponse500(response, Const.DB_REQUEST_ERROR)
+        if (!processedProducts) return httpResponse500(response, Const.DB_REQUEST_ERROR);
         
         return processedProducts;
     }
