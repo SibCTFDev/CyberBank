@@ -38,12 +38,6 @@ export class AuthController {
         response.status(201);
         return Const.REGISTER_SUCCESS;
     }
-
-    @Post('/reset')
-    changePassword(@Body({ required: true }) userData: UserParams) {
-        // TODO
-        return `verify login ${userData.username} and change password`;
-    }
 }
 
 @Controller()

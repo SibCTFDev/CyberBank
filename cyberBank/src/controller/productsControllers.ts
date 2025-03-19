@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Controller, JsonController, Get, Post, 
     Param, Body, Authorized, Req, Res 
 } from 'routing-controllers';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 
 import { ProductObject } from '../interface/productObject';
 import { CommentObject } from '../interface/commentObject';
@@ -12,7 +12,7 @@ import { getUserByName, getProducts, createProduct,
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
     deleteField, checkProductObject , checkCommentObject,
-    prepareProductsToResponse
+    prepareProductsToResponse, prepareProductToResponse
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
@@ -37,6 +37,23 @@ export class ProductsController {
         if (!processedProducts) return httpResponse500(response, Const.DB_REQUEST_ERROR);
         
         return processedProducts;
+    }
+
+    @Authorized()
+    @Get('/:pid')
+    async getProduct(@Param('pid') pid: number, @Req() request: Request, 
+        @Res() response: Response) {
+        const tokenPayload = getTokenPayload(request.cookies.jwt);
+        const user = await getUserByName(tokenPayload.username);
+        const product = await getProductById(pid);
+
+        if (!user) return httpResponse401(response, Const.BAD_SESSION);
+        if (!product) return httpResponse400(response, Const.BAD_REQUEST);
+
+        const processedProduct = await prepareProductToResponse(product, user);
+        if (!processedProduct) return httpResponse500(response, Const.DB_REQUEST_ERROR);
+
+        return processedProduct;
     }
 
     @Authorized()
