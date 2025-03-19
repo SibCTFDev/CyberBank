@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,8 +17,8 @@ import ProfilePage from './component/page/ProfilePage';
 import AuthPage from './component/page/AuthPage';
 import RegisterPage from './component/page/RegisterPage';
 import useTheme from "./Theme"
-
-import { getUser, getProducts } from './requests';
+import CustomWebSocket from './socket';
+import { getUser } from './requests';
 
 
 function App() {
@@ -29,52 +29,52 @@ function App() {
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState({});
 
+  const socketRef = useRef(null);
+
   const HOME = "/";
   const PROFILE = "/profile/";
   const PRODUCT = "/product/";
   const LOGIN = "/login/";
   const REGISTER = "/register/";
 
-  const getProductsInfo = () => {
-    getProducts({
-      handler: (data) => {
-        setProducts(data);
+  useEffect(() => {
+    if (!authorized || socketRef.current) return;
+
+    socketRef.current = new CustomWebSocket({
+      uid: userData.id,
+      onOpenHandler: () => {
+        if (!userData.id)
+          getUser({handler: (data) => {
+            setUserData(data);
+            socketRef.current.id = data.id;
+            socketRef.current.sendMessage()
+          }});
+        else socketRef.current.sendMessage();
+      },
+      onMessageHandler: (data) => {
+        switch(data.type) {
+          case 'update':
+            socketRef.current.sendMessage(data.pid);
+            break;
+          case 'user':
+            setUserData(data.message);
+            break;
+          case 'products':
+            setProducts(data.message);
+            break;
+          case 'product':
+            setProducts(products => products.map(product =>
+              product.id === data.message.id ? data.message : product
+            ));
+            break;
+          default:
+            console.log(data.message);
+            break;
+        };
       }
     });
-  };
+  }, [userData, authorized]);
 
-  const getUserInfo = () => {
-    getUser({
-      handler: (data) => {
-        setUserData(data);
-      }
-    });
-  };
-
-  const refreshInfo = () => {
-    if (authorized) {
-      getProductsInfo();
-      getUserInfo();
-    };
-  };
-
-  useEffect(() => {
-    if (authorized) {
-      getProductsInfo();
-      getUserInfo();
-    };
-  }, [authorized]);
-
-  useEffect(() => {
-      const intervalId = setInterval(() => {
-        if (authorized) {
-          getProductsInfo();
-          getUserInfo();
-        }
-      }, 5000);
-
-      return () => clearInterval(intervalId);
-  });
 
   const appContent = authorized ? (
     <Router className="AppFrame">
@@ -89,7 +89,6 @@ function App() {
             <HomePage 
               products={products}
               userData={userData}
-              refreshInfo={refreshInfo}
             />
             }/>
           <Route exact path={PROFILE} element={
@@ -98,11 +97,7 @@ function App() {
               userData={userData}
             />
           }/>
-          <Route exact path={PRODUCT} element={
-            <ProductPage
-              refreshInfo={refreshInfo}
-            />
-            }/>
+          <Route exact path={PRODUCT} element={<ProductPage/>}/>
           <Route exact path="*" element={<Navigate to={HOME} replace/>}/>
       </Routes>
     </Router>

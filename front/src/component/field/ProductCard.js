@@ -1,4 +1,5 @@
 import {Grid2 as Grid} from "@mui/material";
+import {HOST} from "../../requests";
 
 
 function ProductCard(props) {
@@ -10,7 +11,7 @@ function ProductCard(props) {
     };
 
     return (
-        <Grid 
+        <Grid
             item
             sx={{
                 bgcolor: "color.background",
@@ -22,9 +23,9 @@ function ProductCard(props) {
                 width: "200px",
                 minWidth: "200px",
                 height: "300px",
-                
+
             }}
-            onClick={selectProductHandler} 
+            onClick={selectProductHandler}
         >
             <Grid
                 container
@@ -33,8 +34,13 @@ function ProductCard(props) {
                 spacing="12px"
                 alignItems="center"
             >
-                <Grid item>
-                    <img src={"/product.png"} alt={product.imageId} width={150}/>
+                <Grid item sx={{height: "152px"}}>
+                    <img 
+                        src={`${HOST}/public/images/${product.image_path}`} 
+                        alt={product.imageId} 
+                        width={150}
+                        style={{borderRadius: "0.375rem"}}
+                    />
                 </Grid>
                 <Grid item className="ProductDescription" sx={{color: "color.text"}}>
                     {product.description}
@@ -50,7 +56,6 @@ function ProductCard(props) {
                 )}
             </Grid>
         </Grid>
-        
     );
 }
 

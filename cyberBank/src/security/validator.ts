@@ -4,10 +4,10 @@ import Env from '../env';
 
 
 async function Authorized (action: Action) {
-    if (action.request.cookies === undefined) return false;
+    if (!action.request.cookies) return false;
   
     const token: string = action.request.cookies.jwt;
-    if (token === undefined) return false;
+    if (!token) return false;
   
     try {
       jwt.verify(token, Env.SESSION_SECRET);

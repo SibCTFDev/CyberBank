@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Grid2 as Grid, Drawer} from '@mui/material';
 
 import ProductCard from "../field/ProductCard";
@@ -6,13 +6,23 @@ import ProductModal from "../frame/ProductModal";
 
 
 function HomePage(props) {
-    const {products, userData, refreshInfo} = props;
+    const {products, userData} = props;
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [modalOpened, setModalOpened] = useState(false);
 
     const toggleModal = (state) => () => {
         setModalOpened(state);
     };
+
+    useEffect(() => {
+        setSelectedProduct(
+        oldProduct => {
+            if (oldProduct)
+                return products.filter(
+                    product => product.id === oldProduct.id
+                )[0]}
+        );
+    }, [products]);
 
     const pageContent = products.length === 0 ? (
         <Grid 
@@ -62,7 +72,6 @@ function HomePage(props) {
                 product={selectedProduct}
                 closeModal={toggleModal(false)}
                 userName={userData.name}
-                refreshInfo={refreshInfo}
             />
         </Drawer>
         </>
