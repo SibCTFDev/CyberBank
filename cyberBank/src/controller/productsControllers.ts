@@ -99,11 +99,14 @@ export class CreateProductController {
         if (!product) return httpResponse400(response);
 
         await updateUser(user, {productCount: user.productCount+1});
-        (<any>product).ownerId = user.id;
+
+        const processedProduct = await prepareProductToResponse(product, user);
+        if (!processedProduct) return httpResponse500(response, Const.DB_REQUEST_ERROR);
         
         WebSocketController.update();
-        
-        return deleteField(product, 'owner');
+        response.status(201);
+
+        return processedProduct;
     }
 
     @Authorized()
@@ -124,6 +127,7 @@ export class CreateProductController {
         if (!comment) return httpResponse500(response);
 
         WebSocketController.update(product.id);
+        response.status(201);
 
         return Const.COMMENT_SUCCESS;
     }
