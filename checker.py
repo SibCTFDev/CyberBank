@@ -5,6 +5,7 @@ import string
 import time
 
 from enum import Enum
+from datetime import datetime
 
 
 class Status(Enum):
@@ -22,15 +23,15 @@ class CorruptException(Exception):
     pass
 
 
-PORT = ':1337/api'
+PORT = 1337
 ROUND_TIME = 10 # sec
 
-REGISTER_URL = f'http://localhost{PORT}/register'
-LOGIN_URL = f'http://localhost{PORT}/login'
-LOGOUT_URL = f'http://localhost{PORT}/logout'
-CREATE_URL = f'http://localhost{PORT}/products/create'
-PRODUCTS_URL = f'http://localhost{PORT}/products'
-IMAGE_URL = f'http://localhost{PORT}/public/images'
+REGISTER_URL = f'http://localhost:{PORT}/api/register'
+LOGIN_URL = f'http://localhost:{PORT}/api/login'
+LOGOUT_URL = f'http://localhost:{PORT}/api/logout'
+CREATE_URL = f'http://localhost:{PORT}/api/products/create'
+PRODUCTS_URL = f'http://localhost:{PORT}/api/products'
+IMAGE_URL = f'http://localhost:{PORT}/api/public/images'
 
 
 def register(user_data):
@@ -114,11 +115,14 @@ def assert_mumble(response, status=201):
 
 if __name__ == '__main__':
     service_status = Status.OK
+    round_start_time = None
     user_data = None
     round_product = None
     
     while True:
         try:
+            round_start_time = datetime.now()
+
             if round_product:
                 jwt = login(user_data).cookies.get('jwt')
                 round_product = product(jwt, round_product.get('id')).json()
@@ -129,7 +133,7 @@ if __name__ == '__main__':
             round_product = None
             user_data = get_new_user()
 
-            if not register(user_data): # user already exists
+            if not register(user_data):
                 continue
             
             jwt = login(user_data).cookies.get('jwt')
@@ -151,5 +155,8 @@ if __name__ == '__main__':
         except CorruptException:
             service_status = Status.CORRUPT
         finally:
-            print(f'Service status: {service_status}')
-            time.sleep(ROUND_TIME)
+            print(f'[{datetime.now().strftime('%H:%M:%S')}] Service status: {service_status}')
+            
+            round_free_time = ROUND_TIME - (datetime.now() - round_start_time).seconds
+            if (round_free_time > 0):
+                time.sleep(round_free_time)
