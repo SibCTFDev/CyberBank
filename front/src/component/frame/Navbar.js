@@ -30,17 +30,17 @@ function Navbar(props) {
             sx={{
                 width: "100%",
                 height: "10vh",
-                padding: "2px 32px",
+                padding: "2px 32px 2px 16px",
                 borderBottom: "1px solid",
                 borderColor: "color.text",
                 bgcolor: "color.primary",
                 overflow: "hidden",
             }}
         >
-            <Grid item>
+            <Grid item sx={{maxHeight: "10vh"}}>
                 <Grid container alignItems="center" spacing="32px">
                     <Grid item>
-                        <img src={"/logo.png"} alt="Logo" width={105} onClick={gotoPage(HOME)}/>
+                        <img src={"/logo.png"} alt="Logo" width={70} onClick={gotoPage(HOME)}/>
                     </Grid>
                     <Grid item sx={{color: "color.text"}}>
                             {`BALANCE: ${balance}$`}

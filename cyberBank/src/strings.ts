@@ -21,6 +21,8 @@ enum Const {
     SOCKET_SERVER_RUNNING = 'Socket server is running',
     SOCKET_CONNECT = 'Client connected',
     SOCKET_DISCONNECT = 'Client disconnected',
+    IMAGE_CREATE_ERROR = 'Error during image creation',
+    JIMP_ERROR = 'Error during Jimp object initialization',
 }
 
 export default Const;

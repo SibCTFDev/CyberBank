@@ -1,8 +1,10 @@
 services:
   cyber-bank-postgres:
     image: postgres
-    ports:
-      - "5432"
+    restart: unless-stopped
+    mem_limit: 1G
+    memswap_limit: 1G
+    cpu_count: 1
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -12,12 +14,18 @@ services:
       interval: 3s
       timeout: 10s
       retries: 5
+    ports:
+      - "1338:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
 
   cyber-bank-api:
     build: ./cyberBank
     command: ["bash", "./run.sh"]
+    restart: unless-stopped
+    mem_limit: 1G
+    memswap_limit: 1G
+    cpu_count: 1
     environment:
       DEBUG: ${DEBUG}
       SESSION_SECRET: ${SESSION_SECRET}
@@ -29,9 +37,15 @@ services:
         condition: service_healthy
     volumes:
       - ./cyberBank:/app
+      - /app/node_modules
+      - /app/build
   
   cyber-bank-front:
     build: ./front
+    restart: unless-stopped
+    mem_limit: 1G
+    memswap_limit: 1G
+    cpu_count: 1
     environment:
       CHOKIDAR_USEPOLLING: "true"
       WATCHPACK_POLLING: "true"
@@ -41,7 +55,7 @@ services:
     depends_on:
       - cyber-bank-api
     ports:
-      - "0.0.0.0:80:80"
+      - "0.0.0.0:1337:1337"
     volumes:
       - ./front/src:/app/src:delegated
       - ./front/public:/app/public:delegated
