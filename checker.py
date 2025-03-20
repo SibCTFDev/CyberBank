@@ -9,10 +9,10 @@ from datetime import datetime
 
 
 class Status(Enum):
-    OK = 'ok'
-    MUMBLE = 'mumble'
-    CORRUPT = 'corrupt'
-    DOWN = 'down'
+    OK = 'OK'
+    MUMBLE = 'MUMBLE'
+    CORRUPT = 'CORRUPT'
+    DOWN = 'DOWN'
 
 
 class MumbleException(Exception):
@@ -155,7 +155,7 @@ if __name__ == '__main__':
         except CorruptException:
             service_status = Status.CORRUPT
         finally:
-            print(f'[{datetime.now().strftime('%H:%M:%S')}] Service status: {service_status}')
+            print(f'[{datetime.now().strftime('%H:%M:%S')}] Service status: {service_status.value}')
             
             round_free_time = ROUND_TIME - (datetime.now() - round_start_time).seconds
             if (round_free_time > 0):
