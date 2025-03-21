@@ -5,7 +5,7 @@ import {
 } from "@mui/material";
 import CommentIcon from '@mui/icons-material/Comment';
 import {useNavigate} from "react-router-dom";
-import {getBuy, HOST} from "../../requests";
+import {putBuy, HOST} from "../../requests";
 
 
 function ProductDataModal(props) {
@@ -21,7 +21,7 @@ function ProductDataModal(props) {
     const buyProductHandler = () => {
         setError('');
 
-        getBuy({
+        putBuy({
             pid: product.id,
             handler: () => {
                 closeModal();

@@ -1,4 +1,4 @@
 export interface BuyObject {
-    product_id: number;
+    pid: number;
     reason: string;
 }

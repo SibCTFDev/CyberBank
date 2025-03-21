@@ -58,40 +58,6 @@ export class ProductsController {
 
         return processedProduct;
     }
-
-    @Authorized()
-    @Put('/:pid/buy')
-    async buyProduct(
-        @Body({ required: true }) buyInfo: BuyObject,
-        @Req() request: Request,
-        @Res() response: Response
-    ) {
-        const tokenPayload = getTokenPayload(request.cookies.jwt);
-        const user = await getUserByName(tokenPayload.username);
-        
-        if (!user) return httpResponse401(response, Const.BAD_SESSION);
-
-        const product = await getProductById(buyInfo.product_id);
-        
-        if (!product) return httpResponse400(response, Const.BAD_REQUEST);
-        if (product.owner.id === user.id) return httpResponse400(response, Const.SELFBUY_ERROR);
-        if (user.balance < product.price) return httpResponse400(response, Const.NOT_ENOUGH_MONEY);
-
-        let reasonToBuy = buyInfo.reason;
-        await updateUser(product.owner, {balance: product.owner.balance + product.price});
-
-        let isReasonExist = /^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason);
-        if (isReasonExist) {
-            createComment(reasonToBuy, user, product);
-        }
-
-        await updateUser(user, {balance: user.balance - product.price});
-        await updateProduct(product, {owner: user});
-
-        WebSocketController.update(product.id);
-        
-        return Const.BUY_SUCCESS;
-    }
 }
 
 @JsonController('/products')
@@ -139,5 +105,35 @@ export class CreateProductController {
         WebSocketController.update(product.id);
 
         return Const.COMMENT_SUCCESS;
+    }
+
+    @Authorized()
+    @Put('/:pid/buy')
+    async buyProduct(
+        @Body({ required: true }) buyInfo: BuyObject,
+        @Req() request: Request, @Res() response: Response) {
+
+        const tokenPayload = getTokenPayload(request.cookies.jwt);
+        const user = await getUserByName(tokenPayload.username);
+        
+        if (!user) return httpResponse401(response, Const.BAD_SESSION);
+
+        const product = await getProductById(buyInfo.pid);
+        
+        if (!product) return httpResponse400(response, Const.BAD_REQUEST);
+        if (product.owner.id === user.id) return httpResponse400(response, Const.SELFBUY_ERROR);
+        if (user.balance < product.price) return httpResponse400(response, Const.NOT_ENOUGH_MONEY);
+
+        updateUser(product.owner, {balance: product.owner.balance + product.price})
+            .then(() => {
+                if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
+                    createComment(buyInfo.reason, user, product);
+                
+                updateUser(user, {balance: user.balance - product.price});
+                updateProduct(product, {owner: user});
+            })
+            .then(() => WebSocketController.update(product.id));
+        
+        return Const.BUY_SUCCESS;
     }
 }
