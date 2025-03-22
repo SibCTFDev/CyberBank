@@ -102,7 +102,8 @@ export class CreateProductController {
         (<any>product).ownerId = user.id;
         
         WebSocketController.update();
-        
+
+        response.status(201);
         return deleteField(product, 'owner');
     }
 
