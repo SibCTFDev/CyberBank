@@ -42,31 +42,31 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если проверить его в специализированном сервисе, можно было сразу получить пэйлоад:
 
-![alt text](images/regex.png)
+<img src="images/regex.png" width=50% height=50%>
 
 Внимательно изучив код, можно было заметить, что проверка наличия достаточных средств на балансе происходит до валидации `reason`. Однако обновление баланса юзера просиходит после анализа регулярки:
 
-![alt text](images/regex-code.png)
+<img src="images/regex-code.png" width=50% height=50%>
 
 Поэтому, если сначала отправить запрос, вызывающий DoS:
 
-![alt text](images/dos-req.png)
+<img src="images/dos-req.png" width=50% height=50%>
 
 То во время обработки регулярки можно отправить еще несколько запросов на покупку продуктов, которые успешно выполнятся, потому что пройдут проверку условия `(user.balance < product.price)`:
 
-![alt text](images/dos-req-2.png)
+<img src="images/dos-req-2.png" width=50% height=50%>
 
 Например, у юзера было на балансе 300$:
 
-![alt text](images/dos-balance.png)
+<img src="images/dos-balance.png" width=30% height=30%>
 
 И есть два продукта в магазине:
 
-![alt text](images/dos-2-products.png)
+<img src="images/dos-2-products.png" width=30% height=30%>
 
 Выполнив последовательность запросов, описанную выше, юзер получит оба продукта на аккаунт, заплатив только за один:
 
-![alt text](images/dos-result.png)
+<img src="images/dos-result.png" width=30% height=30%>
 
 ---
 
@@ -74,11 +74,11 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 База данных торчит наружу:
 
-![alt text](images/database.png)
+<img src="images/database.png" width=30% height=30%>
 
 Достаточно подключиться к ней и изменить `ownerId` продукта с флагом на свой, или пополнить баланс своего пользователя чтобы купить нужный продукт, или снизить цену на продукт с флагом, да что угодно!
 
-![alt text](images/database-hack.png)
+<img src="images/database-hack.png" width=50% height=50%>
 
 ---
 
@@ -86,13 +86,13 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если обратить внимание, как приложение получает данные о продуктах, то можно заметить определенный WS-запрос:
 
-![alt text](images/ws-request.png)
+<img src="images/ws-request.png" width=70% height=70%>
 
 Запрос содержит json `{"uid":1,"pid":null}`, изучив его внимательно, становится понятно, что параметр `uid` отвечает за идентификатор юзера, а параметр `pid` - за идентификатор продукта. Если передать `"pid":null`, то возвращаются все продукты.
 
 При этом в декодированном виде приходит контент тех продуктов, идентификатор владельца которых передан в `uid` в запросе. Таким образом, можно отправить повторный запрос с `pid` владельца продукта с флагом, и в ответе получить декодированный контент:   
 
-![alt text](images/ws-hack.png)
+<img src="images/ws-hack.png" width=70% height=70%>
 
 ---
 
@@ -100,16 +100,30 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если внимательно прочитать код сервиса, можно заметить, что криптография, которой шифровались данные сервиса — на самом деле **и не криптография вовсе**:  
 
-![alt text](images/strong-crypto.png)
+<img src="images/strong-crypto.png" width=70% height=70%>
 
 Наверное, вас должна была напугать обфускация программного кода, но на самом деле, так как это **TypeScript**, можно было легко декодировать данные, просто перенеся код из функции `verifyContent` в сплойт или исполнив его в интерпретаторе TS:
 
-![alt text](images/decode.png)
+<img src="images/decode.png" width=70% height=70%>
 
 ---
 
-### 7) Скрытый флаг внутри изображения
+### 7. Скрытый флаг внутри изображения
 
-Следующей проблемой стал алгоритм генерации картинки — так как алгоритм прятал внутри изображения флаг, вы могли парсить картинки и извлекать из них содержимое:
+Если вы обратите внимание на алгоритм генерации картинки, то заметите, что он прячет внутри изображения флаг:
 
-![alt text](images/image-flag-inside.png)
+<img src="images/image-create.png" width=50% height=50%>
+
+Чтобы достать флаг обратно, давайте попросим нейросеть написать декодирующую функцию:
+
+<img src="images/deepseek.png" width=50% height=50%>
+
+После чего загрузим картинку и запустим скрипт:
+
+```
+$ pip install pillow
+$ python decode.py
+Decoded message: secret
+```
+
+Скрипт прикреплен `writeup/decode.py`
