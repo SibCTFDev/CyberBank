@@ -42,19 +42,19 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если проверить его в специализированном сервисе, можно было сразу получить пэйлоад:
 
-<img src="images/regex.png" width=50% height=50%>
+<img src="images/regex.png" width=60% height=60%>
 
 Внимательно изучив код, можно было заметить, что проверка наличия достаточных средств на балансе происходит до валидации `reason`. Однако обновление баланса юзера просиходит после анализа регулярки:
 
-<img src="images/regex-code.png" width=50% height=50%>
+<img src="images/regex-code.png" width=70% height=70%>
 
 Поэтому, если сначала отправить запрос, вызывающий DoS:
 
-<img src="images/dos-req.png" width=50% height=50%>
+<img src="images/dos-req.png" width=70% height=70%>
 
 То во время обработки регулярки можно отправить еще несколько запросов на покупку продуктов, которые успешно выполнятся, потому что пройдут проверку условия `(user.balance < product.price)`:
 
-<img src="images/dos-req-2.png" width=50% height=50%>
+<img src="images/dos-req-2.png" width=70% height=70%>
 
 Например, у юзера было на балансе 300$:
 
@@ -74,11 +74,11 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 База данных торчит наружу:
 
-<img src="images/database.png" width=30% height=30%>
+<img src="images/database.png" width=40% height=40%>
 
 Достаточно подключиться к ней и изменить `ownerId` продукта с флагом на свой, или пополнить баланс своего пользователя чтобы купить нужный продукт, или снизить цену на продукт с флагом, да что угодно!
 
-<img src="images/database-hack.png" width=50% height=50%>
+<img src="images/database-hack.png" width=60% height=60%>
 
 ---
 
@@ -86,13 +86,13 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если обратить внимание, как приложение получает данные о продуктах, то можно заметить определенный WS-запрос:
 
-<img src="images/ws-request.png" width=70% height=70%>
+<img src="images/ws-request.png" width=80% height=80%>
 
 Запрос содержит json `{"uid":1,"pid":null}`, изучив его внимательно, становится понятно, что параметр `uid` отвечает за идентификатор юзера, а параметр `pid` - за идентификатор продукта. Если передать `"pid":null`, то возвращаются все продукты.
 
 При этом в декодированном виде приходит контент тех продуктов, идентификатор владельца которых передан в `uid` в запросе. Таким образом, можно отправить повторный запрос с `pid` владельца продукта с флагом, и в ответе получить декодированный контент:   
 
-<img src="images/ws-hack.png" width=70% height=70%>
+<img src="images/ws-hack.png" width=80% height=80%>
 
 ---
 
@@ -100,11 +100,11 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если внимательно прочитать код сервиса, можно заметить, что криптография, которой шифровались данные сервиса — на самом деле **и не криптография вовсе**:  
 
-<img src="images/strong-crypto.png" width=70% height=70%>
+<img src="images/strong-crypto.png" width=80% height=80%>
 
 Наверное, вас должна была напугать обфускация программного кода, но на самом деле, так как это **TypeScript**, можно было легко декодировать данные, просто перенеся код из функции `verifyContent` в сплойт или исполнив его в интерпретаторе TS:
 
-<img src="images/decode.png" width=70% height=70%>
+<img src="images/decode.png" width=80% height=80%>
 
 ---
 
@@ -112,11 +112,11 @@ if (/^REASON: (([a-z])+.)+\s#([0-9])+$/.test(buyInfo.reason))
 
 Если вы обратите внимание на алгоритм генерации картинки, то заметите, что он прячет внутри изображения флаг:
 
-<img src="images/image-create.png" width=50% height=50%>
+<img src="images/image-create.png" width=60% height=60%>
 
 Чтобы достать флаг обратно, давайте попросим нейросеть написать декодирующую функцию:
 
-<img src="images/deepseek.png" width=50% height=50%>
+<img src="images/deepseek.png" width=60% height=60%>
 
 После чего загрузим картинку и запустим скрипт:
 
