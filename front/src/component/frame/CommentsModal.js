@@ -23,7 +23,7 @@ function CommentsModal(props) {
                 direction="column" 
                 sx={{width: "100%", paddingRight: "6px"}}
             >
-                {comments.map(comment => 
+                {comments.sort((a,b) => a.id - b.id).map(comment => 
                     <CommentLine
                         key={comment.id}
                         comment={comment}

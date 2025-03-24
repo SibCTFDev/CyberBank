@@ -45,7 +45,7 @@ function ProfilePage(props) {
         >   
             {products.filter(
                 product => product.seller === userData.name
-            ).map(product => (
+            ).sort((a,b) => a.id - b.id).map(product => (
                 <ProductCard
                     key={product.id}
                     product={product}

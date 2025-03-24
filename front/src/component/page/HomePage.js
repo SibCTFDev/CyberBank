@@ -34,7 +34,7 @@ function HomePage(props) {
             <p>You're late, all the <s>flags</s> products have been bought up :(</p>
         </Grid>
     ) : (
-        products.map(product => (
+        products.sort((a,b) => a.id - b.id).map(product => (
             <ProductCard
                 key={product.id}
                 product={product}
