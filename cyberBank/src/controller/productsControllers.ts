@@ -75,7 +75,7 @@ export class CreateProductController {
         if (user.productCount > 4) return httpResponse400(response, Const.LIMIT_OVER);
 
         const product = await createProduct(data.description, data.content, data.price, user);
-        if (!product) return httpResponse400(response);
+        if (!product) return httpResponse400(response, Const.PRODUCT_EXISTS);
 
         await updateUser(user, {productCount: user.productCount+1});
 

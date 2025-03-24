@@ -4,6 +4,7 @@ enum Const {
     SERVER_ERROR = 'Error during the operation processing',
     DB_REQUEST_ERROR = 'Unable to request data',
     BAD_SESSION = 'Undefined session',
+    PRODUCT_EXISTS = 'Such product is already exist',
     USER_EXISTS = 'Such user is already exist',
     USER_NOT_FOUND = 'Such user does not exist',
     PRODUCT_NOT_FOUND = 'Such product does not exist',

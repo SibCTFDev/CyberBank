@@ -98,6 +98,9 @@ def create(jwt, product_data):
         data=json.dumps(product_data),
         cookies={'jwt': jwt})
     
+    if r.status_code == 400 and r.text == 'Such product is already exist':
+        return None
+    
     assert_exception(r, 201)
     return r
 
@@ -140,7 +143,10 @@ def check_product_buy(jwt):
         content=content,
         price=100)
     
-    test_product = create(second_jwt, product_data).json()
+    test_product = None
+    while not test_product:
+        test_product = create(second_jwt, product_data).json()
+        
     buy_product(jwt, test_product.get('id'))
     
     time.sleep(.5)
@@ -186,6 +192,9 @@ def put_flag():
         product_data = get_new_product()
         
         jury_product = create(jwt, product_data).json()
+        
+        if not jury_product:
+            raise MumbleException()
         
         if product_data.get('content') != jury_product.get('content'):
             raise CorruptException()

@@ -73,8 +73,10 @@ export function checkProductObject(data: ProductObject) : boolean {
 
 export function checkBuyObject(data: BuyObject) : boolean {
     if (!data.pid || !data.reason ||
-        data.reason.length >= 25 ||
-        data.reason.length < 1)
+        data.pid < 0 ||
+        data.reason.length < 1 ||
+        data.reason.length >= 25
+        )
         return true;
 
     return false;
