@@ -10,17 +10,21 @@ def service_up():
     print("[service is worked] - 101")
     exit(101)
 
+
 def service_corrupt():
     print("[service is corrupt] - 102")
     exit(102)
+
 
 def service_mumble():
     print("[service is mumble] - 103")
     exit(103)
 
+
 def service_down():
     print("[service is down] - 104")
     exit(104)
+
 
 if len(sys.argv) != 5:
     print("\nUsage:\n\t" + sys.argv[0] + " <host> (put|check) <flag_id> <flag>\n")
@@ -54,17 +58,9 @@ class Url():
 
 
 def assert_exception(response, status):
-    assert_corrupt(response)
-    assert_mumble(response, status)
-
-
-def assert_mumble(response, status):
     if response.status_code != status:
         raise MumbleException()
-
-
-def assert_corrupt(response):
-    if response.status_code >= 500:
+    elif response.status_code >= 500:
         raise CorruptException()
     
 
