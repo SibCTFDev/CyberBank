@@ -3,16 +3,40 @@ import json
 import random
 import string
 import time
+import sys
 
 from enum import Enum
-from datetime import datetime
 
 
-class Status(Enum):
-    OK = 'OK'
-    MUMBLE = 'MUMBLE'
-    CORRUPT = 'CORRUPT'
-    DOWN = 'DOWN'
+def service_up():
+    print("[service is worked] - 101")
+    exit(101)
+
+def service_corrupt():
+    print("[service is corrupt] - 102")
+    exit(102)
+
+def service_mumble():
+    print("[service is mumble] - 103")
+    exit(103)
+
+def service_down():
+    print("[service is down] - 104")
+    exit(104)
+
+if len(sys.argv) != 5:
+    print("\nUsage:\n\t" + sys.argv[0] + " <host> (put|check) <flag_id> <flag>\n")
+    print("Example:\n\t" + sys.argv[0] + " \"127.0.0.1\" put \"abcdifghr\" \"c01d4567-e89b-12d3-a456-426600000010\" \n")
+    print("\n")
+    exit(0)
+
+
+port = 1337
+host = f'{sys.argv[1]}:{port}'
+port = 4102
+command = sys.argv[2]
+f_id = sys.argv[3]
+flag = sys.argv[4]
 
 
 class MumbleException(Exception):
@@ -23,74 +47,72 @@ class CorruptException(Exception):
     pass
 
 
-PORT = 1337
-ROUND_TIME = 10 # sec
+class Url(Enum):
+    REGISTER_URL = f'http://{host}/api/register'
+    LOGIN_URL = f'http://{host}/api/login'
+    LOGOUT_URL = f'http://{host}/api/logout'
+    CREATE_URL = f'http://{host}/api/products/create'
+    PRODUCTS_URL = f'http://{host}/api/products'
+    IMAGE_URL = f'http://{host}/api/public/images'
 
-REGISTER_URL = f'http://localhost:{PORT}/api/register'
-LOGIN_URL = f'http://localhost:{PORT}/api/login'
-LOGOUT_URL = f'http://localhost:{PORT}/api/logout'
-CREATE_URL = f'http://localhost:{PORT}/api/products/create'
-PRODUCTS_URL = f'http://localhost:{PORT}/api/products'
-IMAGE_URL = f'http://localhost:{PORT}/api/public/images'
 
+def assert_mumble(response, status):
+    if response.status_code != status:
+        raise MumbleException()
+    
 
 def register(user_data):
     r = requests.post(
-        REGISTER_URL, 
+        Url.REGISTER_URL.value, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(user_data))
     
     if r.status_code == 401: # user already exists
         None
         
-    assert_mumble(r)
+    assert_mumble(r, 201)
     return r
 
 
 def login(user_data):
     r = requests.post(
-        LOGIN_URL, 
+        Url.LOGIN_URL.value, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(user_data))
     
-    assert_mumble(r)
+    assert_mumble(r, 201)
     return r
 
 
 def logout(jwt):
-    r = requests.get(LOGOUT_URL, cookies={'jwt': jwt})
+    r = requests.get(Url.LOGOUT_URL.value, cookies={'jwt': jwt})
     assert_mumble(r, 200)
 
 
 def create(jwt, product_data):
-    r = requests.post(CREATE_URL, 
+    r = requests.post(Url.CREATE_URL.value, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(product_data),
         cookies={'jwt': jwt})
     
-    assert_mumble(r)
+    assert_mumble(r, 201)
     return r
 
 
-def product(jwt, pid):
-    r = requests.get(f'{PRODUCTS_URL}/{pid}', cookies={'jwt': jwt})
+def products(jwt):
+    r = requests.get(Url.PRODUCTS_URL.value, cookies={'jwt': jwt})
     
     assert_mumble(r, 200)
     return r
 
 
 def check_image(image_path):
-    r = requests.get(f'{IMAGE_URL}/{image_path}')
+    r = requests.get(f'{Url.IMAGE_URL.value}/{image_path}')
     assert_mumble(r, 200)
 
 
-def get_random_string(size=12, chars=string.ascii_lowercase + string.digits):
+def get_random_string(size=16, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
-
-
-def get_new_flag():
-    # flag generation here
-    return 'c01d4567-e89b-12d3-a456-426600000010'
 
 
 def get_new_user():
@@ -100,63 +122,86 @@ def get_new_user():
     }
     
     
-def get_new_product(flag):
+def get_new_product():
     return {
-        'description': 'Flag, only today!!! The tasty and pleasant flag at an affordable price! Hurry up to buy!',
+        'description': f_id,
         'content': flag,
         'price': 31337,
     }
-
-
-def assert_mumble(response, status=201):
-    if response.status_code != status:
-        raise MumbleException()
-
-
-if __name__ == '__main__':
-    service_status = Status.OK
-    round_start_time = None
-    user_data = None
-    round_product = None
     
-    while True:
-        try:
-            round_start_time = datetime.now()
 
-            if round_product:
-                jwt = login(user_data).cookies.get('jwt')
-                round_product = product(jwt, round_product.get('id')).json()
-                check_image(round_product.get('image_path'))
-                logout(jwt)
-            
-            service_status = Status.OK
-            round_product = None
-            user_data = get_new_user()
+def get_jwt():
+    user_data = get_new_user()
 
-            if not register(user_data):
-                continue
-            
-            jwt = login(user_data).cookies.get('jwt')
-            if not jwt:
-                raise MumbleException()
-            
-            product_data = get_new_product(get_new_flag())
-            round_product = create(jwt, product_data).json()
-            
-            if product_data.get('content') != round_product.get('content'):
-                raise CorruptException()
-            
-            logout(jwt)
-            
-        except requests.exceptions.ConnectionError:
-            service_status = Status.DOWN
-        except MumbleException:
-            service_status = Status.MUMBLE
-        except CorruptException:
-            service_status = Status.CORRUPT
-        finally:
-            print(f'[{datetime.now().strftime('%H:%M:%S')}] Service status: {service_status.value}')
-            
-            round_free_time = ROUND_TIME - (datetime.now() - round_start_time).seconds
-            if (round_free_time > 0):
-                time.sleep(round_free_time)
+    if not register(user_data):
+        get_jwt()
+    
+    jwt = login(user_data).cookies.get('jwt')
+    if not jwt:
+        raise MumbleException()
+    
+    return jwt
+
+
+def put_flag():
+    try:
+        jwt = get_jwt()
+        product_data = get_new_product()
+        
+        round_product = create(jwt, product_data).json()
+        
+        if product_data.get('content') != round_product.get('content'):
+            raise CorruptException()
+        
+        logout(jwt)
+        
+    except requests.exceptions.ConnectionError:
+        service_down()
+    except requests.exceptions.ConnectTimeout:
+        service_down()
+    except MumbleException:
+        service_mumble()
+    except CorruptException:
+        service_corrupt()
+    except Exception as e:
+        print(e)
+        service_corrupt()
+
+
+def check_flag():
+    try:
+        jwt = get_jwt()
+        
+        product_list = products(jwt).json()
+        jury_product = [product for product in product_list if product.get('description') == f_id]
+        
+        if len(jury_product) > 1:
+            raise MumbleException()
+        elif len(jury_product) == 0:
+            raise CorruptException()
+        elif not jury_product[0].get('content'):
+            raise CorruptException()
+        
+        check_image(jury_product[0].get('image_path'))
+        logout(jwt)
+        
+    except requests.exceptions.ConnectionError:
+        service_down()
+    except requests.exceptions.ConnectTimeout:
+        service_down()
+    except MumbleException:
+        service_mumble()
+    except CorruptException:
+        service_corrupt()
+    except Exception:
+        service_corrupt()
+
+
+if command == "put":
+    put_flag()
+    check_flag()
+    service_up()
+
+if command == "check":
+    check_flag()
+    service_up()

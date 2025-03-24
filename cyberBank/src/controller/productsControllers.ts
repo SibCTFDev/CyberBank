@@ -11,8 +11,8 @@ import { getUserByName, getProducts, createProduct,
     createComment
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
-    deleteField, checkProductObject , checkCommentObject,
-    prepareProductsToResponse, prepareProductToResponse
+    prepareProductsToResponse, prepareProductToResponse,
+    checkProductObject , checkCommentObject
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
