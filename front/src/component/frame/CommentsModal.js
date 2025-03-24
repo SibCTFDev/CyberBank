@@ -11,7 +11,8 @@ function CommentsModal(props) {
     const sendComment = () => {
         postComment({
             pid: pid,
-            data: {'content': content}
+            data: {'content': content},
+            handler: setContent('')
         });
     };
 
@@ -22,7 +23,7 @@ function CommentsModal(props) {
                 direction="column" 
                 sx={{width: "100%", paddingRight: "6px"}}
             >
-                {comments.map(comment => 
+                {comments.sort((a,b) => a.id - b.id).map(comment => 
                     <CommentLine
                         key={comment.id}
                         comment={comment}
@@ -65,6 +66,7 @@ function CommentsModal(props) {
                                     label="Comment"
                                     slotProps={{htmlInput: {maxLength: 100}}}
                                     sx={{bgcolor: "color.background", color: "color.text"}}
+                                    value={content}
                                     onChange={(event) => setContent(event.target.value)}
                                     fullWidth
                                     size="small"

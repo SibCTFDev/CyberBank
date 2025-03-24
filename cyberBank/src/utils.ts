@@ -3,6 +3,7 @@ import { AuthController, LogoutController } from './controller/authControllers';
 import { ProductsController, CreateProductController } from './controller/productsControllers';
 import { UserParams } from './interface/userParams';
 import { ProductObject } from './interface/productObject';
+import { BuyObject } from './interface/buyObject';
 import { CommentObject } from './interface/commentObject';
 import { verifyContent } from './security/service';
 import { getProductComments } from './db/service';
@@ -67,6 +68,17 @@ export function checkProductObject(data: ProductObject) : boolean {
     
     if (!isASCII(data.content)) return true;
     
+    return false;
+}
+
+export function checkBuyObject(data: BuyObject) : boolean {
+    if (!data.pid || !data.reason ||
+        data.pid < 0 ||
+        data.reason.length < 1 ||
+        data.reason.length >= 25
+        )
+        return true;
+
     return false;
 }
 
