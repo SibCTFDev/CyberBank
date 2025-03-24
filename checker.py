@@ -64,7 +64,7 @@ def register(user_data):
         data=json.dumps(user_data))
     
     if r.status_code == 401: # user already exists
-        None
+        return None
         
     assert_mumble(r, 201)
     return r
