@@ -50,12 +50,25 @@ function post({url, data, handler, excHandler, handle401}) {
         });
 }
 
-export function getLogout({handler, excHandler}) {
-    get({url: LOGOUT, handler: handler, excHandler: excHandler});
+function put({url, data, handler, excHandler, handle401}) {
+    axios
+        .put(url, JSON.stringify(data), {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        .then(res => {
+            if (handler) handler(res.data);
+        })
+        .catch(err => {
+            if (handle401) handleResponse401(err);
+            if (excHandler) excHandler(err);
+        });
 }
 
-export function getBuy({pid, handler, excHandler}) {
-    get({url: BUY.replace('%s', pid), handler: handler, excHandler: excHandler, handle401: true});
+export function getLogout({handler, excHandler}) {
+    get({url: LOGOUT, handler: handler, excHandler: excHandler});
 }
 
 export function getUser({handler, excHandler}) {
@@ -76,4 +89,14 @@ export function postCreate({data, handler, excHandler}) {
 
 export function postComment({pid, data, handler, excHandler}) {
     post({url: COMMENT.replace('%s', pid), data: data, handler: handler, excHandler: excHandler, handle401: true});
+}
+
+export function putBuy({pid, handler, excHandler}) {
+    put({
+        url: BUY.replace('%s', pid), 
+        data: {pid: pid, reason: 'Reason: buy'}, 
+        handler: handler, 
+        excHandler: excHandler, 
+        handle401: true
+    });
 }

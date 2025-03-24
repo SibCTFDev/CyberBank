@@ -39,8 +39,8 @@ export async function updateUser(user: User, param: {
     }
 }
 
-export async function createProduct(description: string, 
-    content: string, price: number, 
+export async function createProduct(description: string,
+    content: string, price: number,
     user: User) : Promise<Product | null> {
     const product = new Product();
 
@@ -64,8 +64,9 @@ export async function createProduct(description: string,
 }
 
 export async function updateProduct(product: Product, param: {
-    description?: string, owner?: User, price?: number, 
-    image_path?: string}) : Promise<Product | null> {
+    description?: string, owner?: User, price?: number,
+    image_path?: string, reason?: string
+    }) : Promise<Product | null> {
     if (param.description) product.description = param.description;
     if (param.owner) product.owner = param.owner;
     if (param.price) product.price = param.price;
