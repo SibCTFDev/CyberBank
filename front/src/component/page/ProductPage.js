@@ -1,5 +1,6 @@
 import {useState} from "react";
-import {Button, Grid2 as Grid, TextField, Modal} from '@mui/material';
+import {useNavigate} from "react-router-dom";
+import {Button, Grid2 as Grid, TextField} from '@mui/material';
 import { postCreate } from "../../requests";
 
 
@@ -31,9 +32,8 @@ function ProductPage() {
         price: '',
         error: ''
     });
-    const [modalOpened, setModalOpened] = useState(false);
 
-    const closeModal = () => setModalOpened(false);
+    const navigate = useNavigate();
 
     const changeUserInput = (data, value) => 
         setUserInput({...userInput, [data]: value});
@@ -44,7 +44,7 @@ function ProductPage() {
         
         postCreate({
             data: productData,
-            handler: () => setModalOpened(true),
+            handler: () => navigate('/profile/'),
             excHandler: (err) => {
                 changeUserInput('error', err.response.data)
             }
@@ -106,41 +106,6 @@ function ProductPage() {
                     </Grid>
                 </Grid>
             </Grid>
-            <Modal open={modalOpened} onClose={closeModal}>
-                <Grid 
-                    container 
-                    justifyContent="center" 
-                    alignItems="center"
-                    sx={{width: "100%", height: "100%"}}
-                >
-                    <Grid item sx={{
-                        padding: "24px",
-                        width: "30%",
-                        borderRadius: "0.375rem",
-                        border: "1px solid",
-                        borderColor: "color.primary",
-                        bgcolor: "color.secondary",
-                        color: "color.text"
-                    }}>
-                        <Grid 
-                            container 
-                            justifyContent="space-between" 
-                            alignItems="center"    
-                            direction="column"
-                        >
-                            <Grid item>
-                                <p>
-                                    The product has been successfully created! 
-                                    You can find it in the "Profile" tab
-                                </p>
-                            </Grid>
-                            <Grid item>
-                                <Button onClick={closeModal}>Ok</Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Modal>
         </Grid>
     );
 }
