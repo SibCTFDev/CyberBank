@@ -14,9 +14,8 @@ import { getUserByName, getProducts, createProduct,
     createComment
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
-    deleteField, checkProductObject, checkBuyObject, 
-    checkCommentObject, prepareProductsToResponse, 
-    prepareProductToResponse
+    checkProductObject, checkBuyObject, checkCommentObject, 
+    prepareProductsToResponse, prepareProductToResponse
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
@@ -79,11 +78,14 @@ export class CreateProductController {
         if (!product) return httpResponse400(response);
 
         await updateUser(user, {productCount: user.productCount+1});
-        (<any>product).ownerId = user.id;
+
+        const processedProduct = await prepareProductToResponse(product, user);
+        if (!processedProduct) return httpResponse500(response, Const.DB_REQUEST_ERROR);
         
         WebSocketController.update();
-        
-        return deleteField(product, 'owner');
+        response.status(201);
+
+        return processedProduct;
     }
 
     @Authorized()
@@ -104,6 +106,7 @@ export class CreateProductController {
         if (!comment) return httpResponse500(response);
 
         WebSocketController.update(product.id);
+        response.status(201);
 
         return Const.COMMENT_SUCCESS;
     }
@@ -136,6 +139,7 @@ export class CreateProductController {
             })
             .then(() => WebSocketController.update(product.id));
         
+        response.status(201);
         return Const.BUY_SUCCESS;
     }
 }

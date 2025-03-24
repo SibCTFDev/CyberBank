@@ -25,6 +25,7 @@ export class InitMigrate1741160098914 implements MigrationInterface {
                 "created" character varying NOT NULL,
                 "updated" character varying,
                 "ownerId" integer,
+                CONSTRAINT "UQ_29a733971f71626611bb3808ebe" UNIQUE ("description"),
                 CONSTRAINT "UQ_69e8391440e57f0f02aedc91b64" UNIQUE ("content"),
                 CONSTRAINT "PK_bebc9158e480b949565b4dc7a82" PRIMARY KEY ("id")
             )
