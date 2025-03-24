@@ -2,10 +2,7 @@ import requests
 import json
 import random
 import string
-import time
 import sys
-
-from enum import Enum
 
 
 def service_up():
@@ -31,9 +28,8 @@ if len(sys.argv) != 5:
     exit(0)
 
 
+host = sys.argv[1]
 port = 1337
-host = f'{sys.argv[1]}:{port}'
-port = 4102
 command = sys.argv[2]
 f_id = sys.argv[3]
 flag = sys.argv[4]
@@ -47,13 +43,13 @@ class CorruptException(Exception):
     pass
 
 
-class Url(Enum):
-    REGISTER_URL = f'http://{host}/api/register'
-    LOGIN_URL = f'http://{host}/api/login'
-    LOGOUT_URL = f'http://{host}/api/logout'
-    CREATE_URL = f'http://{host}/api/products/create'
-    PRODUCTS_URL = f'http://{host}/api/products'
-    IMAGE_URL = f'http://{host}/api/public/images'
+class Url():
+    REGISTER_URL = f'http://{host}:{port}/api/register'
+    LOGIN_URL = f'http://{host}:{port}/api/login'
+    LOGOUT_URL = f'http://{host}:{port}/api/logout'
+    CREATE_URL = f'http://{host}:{port}/api/products/create'
+    PRODUCTS_URL = f'http://{host}:{port}/api/products'
+    IMAGE_URL = f'http://{host}:{port}/api/public/images'
 
 
 def assert_mumble(response, status):
@@ -63,7 +59,7 @@ def assert_mumble(response, status):
 
 def register(user_data):
     r = requests.post(
-        Url.REGISTER_URL.value, 
+        Url.REGISTER_URL, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(user_data))
     
@@ -76,7 +72,7 @@ def register(user_data):
 
 def login(user_data):
     r = requests.post(
-        Url.LOGIN_URL.value, 
+        Url.LOGIN_URL, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(user_data))
     
@@ -85,12 +81,12 @@ def login(user_data):
 
 
 def logout(jwt):
-    r = requests.get(Url.LOGOUT_URL.value, cookies={'jwt': jwt})
+    r = requests.get(Url.LOGOUT_URL, cookies={'jwt': jwt})
     assert_mumble(r, 200)
 
 
 def create(jwt, product_data):
-    r = requests.post(Url.CREATE_URL.value, 
+    r = requests.post(Url.CREATE_URL, 
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(product_data),
         cookies={'jwt': jwt})
@@ -100,14 +96,14 @@ def create(jwt, product_data):
 
 
 def products(jwt):
-    r = requests.get(Url.PRODUCTS_URL.value, cookies={'jwt': jwt})
+    r = requests.get(Url.PRODUCTS_URL, cookies={'jwt': jwt})
     
     assert_mumble(r, 200)
     return r
 
 
 def check_image(image_path):
-    r = requests.get(f'{Url.IMAGE_URL.value}/{image_path}')
+    r = requests.get(f'{Url.IMAGE_URL}/{image_path}')
     assert_mumble(r, 200)
 
 
