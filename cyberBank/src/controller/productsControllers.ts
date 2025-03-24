@@ -14,8 +14,9 @@ import { getUserByName, getProducts, createProduct,
     createComment
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
-    deleteField, checkProductObject , checkCommentObject,
-    prepareProductsToResponse, prepareProductToResponse
+    deleteField, checkProductObject, checkBuyObject, 
+    checkCommentObject, prepareProductsToResponse, 
+    prepareProductToResponse
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
@@ -112,7 +113,8 @@ export class CreateProductController {
     async buyProduct(
         @Body({ required: true }) buyInfo: BuyObject,
         @Req() request: Request, @Res() response: Response) {
-
+        if (checkBuyObject(buyInfo)) return httpResponse400(response);
+        
         const tokenPayload = getTokenPayload(request.cookies.jwt);
         const user = await getUserByName(tokenPayload.username);
         
