@@ -3,6 +3,7 @@ import json
 import random
 import string
 import sys
+import time
 
 
 def service_up():
@@ -52,9 +53,19 @@ class Url():
     IMAGE_URL = f'http://{host}:{port}/api/public/images'
 
 
+def assert_exception(response, status):
+    assert_corrupt(response)
+    assert_mumble(response, status)
+
+
 def assert_mumble(response, status):
     if response.status_code != status:
         raise MumbleException()
+
+
+def assert_corrupt(response):
+    if response.status_code >= 500:
+        raise CorruptException()
     
 
 def register(user_data):
@@ -66,7 +77,7 @@ def register(user_data):
     if r.status_code == 401: # user already exists
         return None
         
-    assert_mumble(r, 201)
+    assert_exception(r, 201)
     return r
 
 
@@ -76,13 +87,13 @@ def login(user_data):
         headers={'Content-Type': 'application/json'}, 
         data=json.dumps(user_data))
     
-    assert_mumble(r, 201)
+    assert_exception(r, 201)
     return r
 
 
 def logout(jwt):
     r = requests.get(Url.LOGOUT_URL, cookies={'jwt': jwt})
-    assert_mumble(r, 200)
+    assert_exception(r, 200)
 
 
 def create(jwt, product_data):
@@ -91,23 +102,57 @@ def create(jwt, product_data):
         data=json.dumps(product_data),
         cookies={'jwt': jwt})
     
-    assert_mumble(r, 201)
+    assert_exception(r, 201)
     return r
 
 
 def products(jwt):
     r = requests.get(Url.PRODUCTS_URL, cookies={'jwt': jwt})
     
-    assert_mumble(r, 200)
+    assert_exception(r, 200)
+    return r
+
+
+def product(jwt, pid):
+    r = requests.get(f'{Url.PRODUCTS_URL}/{pid}', cookies={'jwt': jwt})
+    
+    assert_exception(r, 200)
+    return r
+
+
+def buy_product(jwt, pid):
+    r = requests.put(
+        f'{Url.PRODUCTS_URL}/{pid}/buy', 
+        headers={"Content-Type": "application/json"}, 
+        data=json.dumps({'pid': pid, 'reason': 'buy'}),
+        cookies={'jwt': jwt})
+    
+    assert_exception(r, 201)
     return r
 
 
 def check_image(image_path):
     r = requests.get(f'{Url.IMAGE_URL}/{image_path}')
-    assert_mumble(r, 200)
+    assert_exception(r, 200)
+    
+
+def check_product_buy(jwt):
+    second_jwt = get_jwt()
+    content = get_random_string()
+    product_data = get_new_product(
+        desc=get_random_string(),
+        content=content,
+        price=100)
+    
+    test_product = create(second_jwt, product_data).json()
+    buy_product(jwt, test_product.get('id'))
+    
+    time.sleep(.5)
+    if product(jwt, test_product.get('id')).json().get('content') != content:
+        raise CorruptException()
 
 
-def get_random_string(size=16, chars=string.ascii_lowercase + string.digits):
+def get_random_string(size=16, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
@@ -118,11 +163,11 @@ def get_new_user():
     }
     
     
-def get_new_product():
+def get_new_product(desc=f_id, content=flag, price=31337):
     return {
-        'description': f_id,
-        'content': flag,
-        'price': 31337,
+        'description': desc,
+        'content': content,
+        'price': price,
     }
     
 
@@ -144,11 +189,12 @@ def put_flag():
         jwt = get_jwt()
         product_data = get_new_product()
         
-        round_product = create(jwt, product_data).json()
+        jury_product = create(jwt, product_data).json()
         
-        if product_data.get('content') != round_product.get('content'):
+        if product_data.get('content') != jury_product.get('content'):
             raise CorruptException()
         
+        check_product_buy(jwt)
         logout(jwt)
         
     except requests.exceptions.ConnectionError:

@@ -14,9 +14,8 @@ import { getUserByName, getProducts, createProduct,
     createComment
 } from '../db/service';
 import { httpResponse400, httpResponse401, httpResponse500, 
-    deleteField, checkProductObject, checkBuyObject, 
-    checkCommentObject, prepareProductsToResponse, 
-    prepareProductToResponse
+    checkProductObject, checkBuyObject, checkCommentObject, 
+    prepareProductsToResponse, prepareProductToResponse
 } from '../utils';
 import { getTokenPayload } from '../security/service';
 import WebSocketController from './webSocketController';
@@ -140,6 +139,7 @@ export class CreateProductController {
             })
             .then(() => WebSocketController.update(product.id));
         
+        response.status(201);
         return Const.BUY_SUCCESS;
     }
 }
