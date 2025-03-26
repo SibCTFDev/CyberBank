@@ -1,6 +1,6 @@
 class CustomWebSocket {
     constructor({uid,onOpenHandler, onMessageHandler, onErrorHandler, onCloseHandler}) {
-        this.socket = new WebSocket("ws://localhost:1337/ws/");
+        this.socket = new WebSocket(`ws://${window.location.host}/ws/`);
         this.id = uid;
           
         this.socket.onopen = (e) => {
